@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 
-import database from '../../database';
+import database from '../sequelize.config';
 
 const env = process.env.NODE_ENV || 'development';
 // @ts-ignore

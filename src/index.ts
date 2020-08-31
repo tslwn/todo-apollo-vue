@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server';
 import resolvers from './resolvers';
 import typeDefs from './schema';
-import db from './db/models';
+import db from './models';
 import TodoAPI from './datasources/todo';
 
 const server = new ApolloServer({
