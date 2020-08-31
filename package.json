@@ -4,11 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "apollo": "^2.30.3",
     "cross-env": "^7.0.2",
+    "nodemon": "^2.0.4",
     "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
     "@types/node": "^14.6.2",
+    "apollo-datasource": "^0.7.2",
+    "apollo-server": "^2.17.0",
+    "apollo-server-testing": "^2.17.0",
+    "graphql": "^15.3.0",
     "pg": "^8.3.3",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.4",
@@ -16,7 +22,7 @@
     "typescript": "^4.0.2"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development npx ts-node src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
     "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",

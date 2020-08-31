@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "module": "ESNext",
     "target": "es2017",
     "outDir": "./build",
     "baseUrl": "./src",
     "esModuleInterop": true,
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noImplicitAny": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

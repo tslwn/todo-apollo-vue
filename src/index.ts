@@ -1,32 +1,17 @@
-const { Sequelize } = require('sequelize');
-const { development, test, production } = require('../config/database');
+import { ApolloServer } from 'apollo-server';
+import resolvers from './resolvers';
+import typeDefs from './schema';
+import db from './db/models';
+import TodoAPI from './datasources/todo';
 
-let config;
-if (process.env.NODE_ENV === 'development') {
-  config = development;
-} else if (process.env.NODE_ENV === 'test') {
-  config = test;
-} else if (process.env.NODE_ENV === 'production') {
-  config = production;
-} else {
-  throw new Error('Node environment not found');
-}
-
-const { database, username, password, host, dialect } = config;
-const sequelize = new Sequelize(database, username, password, {
-  host,
-  dialect,
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources: () => ({
+    todoAPI: new TodoAPI({ sequelize: db.sequelize }),
+  }),
 });
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .then(() => sequelize.close())
-  .then(() => {
-    console.log('Connection has been closed successfully.');
-  })
-  .catch((error: Error) => {
-    console.error('Unable to connect to the database:', error);
-  });
+server.listen().then(({ url }: { url: string }) => {
+  console.log(`Server running at ${url}`);
+});
