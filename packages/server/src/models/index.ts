@@ -3,7 +3,6 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 import database from '../sequelize.config';
 
 const env = process.env.NODE_ENV || 'development';
-// @ts-ignore
 const config = database[env];
 const sequelize = new Sequelize(
   config.database,
@@ -29,8 +28,6 @@ class Todo
   // timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-
-  public static associate: {};
 }
 
 Todo.init(

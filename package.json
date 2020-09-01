@@ -10,6 +10,10 @@
       "**/husky"
     ]
   },
-  "scripts": {},
-  "dependencies": {}
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail \"yarn workspace client serve\" \"yarn workspace server dev\""
+  },
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
 }

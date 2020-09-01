@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DataSource } from 'apollo-datasource';
 import { Sequelize } from 'sequelize';
 
@@ -54,12 +53,12 @@ class TodoAPI extends DataSource {
   // TODO: move to utilities
   returnRowOrThrow(countAffected, rowsAffected) {
     switch (countAffected) {
-      case 1:
-        return rowsAffected[0];
-      case 0:
-        return new Error('No data found');
-      default:
-        return new Error('Too many rows');
+    case 1:
+      return rowsAffected[0];
+    case 0:
+      return new Error('No data found');
+    default:
+      return new Error('Too many rows');
     }
   }
 
