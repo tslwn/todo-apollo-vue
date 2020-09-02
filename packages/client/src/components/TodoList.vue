@@ -1,16 +1,20 @@
 <template>
-  <ul>
-    <li v-bind:key="todo.id" v-for="todo in todos">{{ todo.text }}</li>
-  </ul>
+  <div>
+    <todo v-for="todo in todos" v-bind:key="todo.id" v-bind:todo="todo"></todo>
+  </div>
 </template>
 
 <script lang="ts">
 import gql from 'graphql-tag';
 import Vue from 'vue';
+import Todo from './Todo.vue';
 
 export default Vue.extend({
   name: 'todo-list',
-  data: () => ({ todos: []  }),
+  components: {
+    Todo,
+  },
+  data: () => ({ todos: [] }),
   apollo: {
     todos: gql`{
       todos {
