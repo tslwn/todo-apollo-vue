@@ -1,8 +1,16 @@
 <template>
   <v-list-item>
+    <v-list-item-action>
+      <v-checkbox disabled v-model="todo.isComplete"></v-checkbox>
+    </v-list-item-action>
     <v-list-item-content>
       <v-list-item-title v-text="todo.text"></v-list-item-title>
     </v-list-item-content>
+    <v-list-item-icon>
+      <v-btn icon disabled>
+        <v-icon>{{ todo.isArchived ? 'mdi-archive-arrow-up' : 'mdi-archive' }}</v-icon>
+      </v-btn>
+    </v-list-item-icon>
   </v-list-item>
 </template>
 <script lang="ts">
