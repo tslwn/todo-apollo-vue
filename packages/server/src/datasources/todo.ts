@@ -71,7 +71,7 @@ class TodoAPI extends DataSource {
         { text },
         { returning: true, where: { id } }
       );
-      this.returnRowOrThrow(countAffected, rowsAffected);
+      return this.returnRowOrThrow(countAffected, rowsAffected);
     } catch (err) {
       return new Error(err);
     }
@@ -86,7 +86,7 @@ class TodoAPI extends DataSource {
         { isComplete },
         { returning: true, where: { id } }
       );
-      this.returnRowOrThrow(countAffected, rowsAffected);
+      return this.returnRowOrThrow(countAffected, rowsAffected);
     } catch (err) {
       return new Error(err);
     }
@@ -101,7 +101,7 @@ class TodoAPI extends DataSource {
         { isArchived },
         { returning: true, where: { id } }
       );
-      this.returnRowOrThrow(countAffected, rowsAffected);
+      return this.returnRowOrThrow(countAffected, rowsAffected);
     } catch (err) {
       return new Error(err);
     }

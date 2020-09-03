@@ -1,7 +1,10 @@
 <template>
   <v-list-item>
     <v-list-item-action>
-      <v-checkbox disabled v-model="todo.isComplete"></v-checkbox>
+      <v-checkbox
+        v-model="todo.isComplete"
+        @change="onIsCompleteChange"
+      ></v-checkbox>
     </v-list-item-action>
     <v-list-item-content>
       <v-list-item-title v-text="todo.text"></v-list-item-title>
@@ -14,8 +17,10 @@
   </v-list-item>
 </template>
 <script lang="ts">
+import gql from 'graphql-tag';
 import Vue, { PropType } from 'vue';
 
+// export from somewhere?
 interface Todo {
   id: string;
   text: string;
@@ -29,6 +34,33 @@ export default Vue.extend({
     todo: {
       type: Object as PropType<Todo>,
       required: true,
+    },
+  },
+  methods: {
+    onIsCompleteChange(isComplete: boolean) {
+      const { id } = this.todo;
+
+      this.$apollo.mutate({
+        mutation: gql`mutation ($id: ID!, $isComplete: Boolean!) {
+          changeTodoIsComplete(id: $id, isComplete: $isComplete) {
+            success
+            message
+            todo {
+              id
+              text
+              isComplete
+              isArchived
+            }
+          }
+        }`,
+        variables: {
+          id,
+          isComplete,
+        },
+      })
+        .catch(() => {
+          this.todo.isComplete = !this.todo.isComplete;
+        });
     },
   },
 });
