@@ -1,5 +1,7 @@
 import { DataSource } from 'apollo-datasource';
-import { Sequelize } from 'sequelize';
+import { Sequelize, OrderItem } from 'sequelize';
+
+import { Todo } from '../models';
 
 class TodoAPI extends DataSource {
   public sequelize: Sequelize;
@@ -10,36 +12,38 @@ class TodoAPI extends DataSource {
     this.sequelize = sequelize;
   }
 
-  initialize(config: any) {
+  initialize(config: any): void {
     this.context = config.context;
   }
 
-  async getAllTodos() {
+  async getAllTodos({ orderBy }): Promise<Todo[] | Error> {
     try {
-      const todos = await this.sequelize.models.Todo.findAll();
+      const order = Object.keys(orderBy).map(key => [key, orderBy[key]]) as OrderItem[];
+
+      const todos = await Todo.findAll({ order });
       return todos;
     } catch (err) {
       return new Error(err);
     }
   }
 
-  async getTodoById({ id }) {
+  async getTodoById({ id }: { id: Todo['id'] }): Promise<Todo | Error> {
     try {
-      const todos = await this.sequelize.models.Todo.findAll({
+      const todos = await Todo.findAll({
         where: {
           id,
         },
       });
       // findAll returns an Array of Todo objects
-      return todos && todos[0] ? todos[0] : null;
+      return todos[0];
     } catch (err) {
       return new Error(err);
     }
   }
 
-  async addTodo({ text }) {
+  async addTodo({ text }: { text: Todo['text'] }): Promise<Todo | Error> {
     try {
-      const todo = await this.sequelize.models.Todo.create({
+      const todo = await Todo.create({
         text,
         isComplete: false,
         isArchived: false,
@@ -51,7 +55,7 @@ class TodoAPI extends DataSource {
   }
 
   // TODO: move to utilities
-  returnRowOrThrow(countAffected, rowsAffected) {
+  returnRowOrThrow<T>(countAffected: number, rowsAffected: T[]): T | Error {
     switch (countAffected) {
     case 1:
       return rowsAffected[0];
@@ -62,12 +66,12 @@ class TodoAPI extends DataSource {
     }
   }
 
-  async changeTodoText({ id, text }) {
+  async changeTodoText({ id, text }: Pick<Todo, 'id' | 'text'>): Promise<Todo | Error> {
     try {
       const [
         countAffected,
         rowsAffected,
-      ] = await this.sequelize.models.Todo.update(
+      ] = await Todo.update(
         { text },
         { returning: true, where: { id } }
       );
@@ -77,12 +81,12 @@ class TodoAPI extends DataSource {
     }
   }
 
-  async changeTodoIsComplete({ id, isComplete }) {
+  async changeTodoIsComplete({ id, isComplete }: Pick<Todo, 'id' | 'isComplete'>): Promise<Todo | Error> {
     try {
       const [
         countAffected,
         rowsAffected,
-      ] = await this.sequelize.models.Todo.update(
+      ] = await Todo.update(
         { isComplete },
         { returning: true, where: { id } }
       );
@@ -92,12 +96,12 @@ class TodoAPI extends DataSource {
     }
   }
 
-  async changeTodoIsArchived({ id, isArchived }) {
+  async changeTodoIsArchived({ id, isArchived }: Pick<Todo, 'id' | 'isArchived'>): Promise<Todo | Error> {
     try {
       const [
         countAffected,
         rowsAffected,
-      ] = await this.sequelize.models.Todo.update(
+      ] = await Todo.update(
         { isArchived },
         { returning: true, where: { id } }
       );

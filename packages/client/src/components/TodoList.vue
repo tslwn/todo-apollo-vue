@@ -11,8 +11,8 @@ import gql from 'graphql-tag';
 import Vue from 'vue';
 import Todo from './Todo.vue';
 
-export const TODOS_QUERY = gql`{
-  todos {
+export const TODOS_QUERY = gql`query ($orderBy: TodoOrderByInput){
+  todos(orderBy: $orderBy) {
     id
     text
     isComplete
@@ -27,7 +27,14 @@ export default Vue.extend({
   },
   data: () => ({ todos: [] }),
   apollo: {
-    todos: TODOS_QUERY,
+    todos: {
+      query: TODOS_QUERY,
+      variables: {
+        orderBy: {
+          createdAt: 'ASC',
+        },
+      },
+    },
   },
 });
 </script>

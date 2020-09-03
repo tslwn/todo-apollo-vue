@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes } from 'sequelize';
+import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
 
 import database from '../sequelize.config';
 
@@ -12,15 +12,19 @@ const sequelize = new Sequelize(
 );
 
 // attributes in the model
-interface TodoAttributes {
+export interface TodoAttributes {
+  id: number;
   text: string;
   isComplete: boolean;
   isArchived: boolean;
 }
 
-class Todo
-  extends Model<TodoAttributes, TodoAttributes>
+type TodoCreationAttributes = Optional<TodoAttributes, 'id'>
+
+export class Todo
+  extends Model<TodoAttributes, TodoCreationAttributes>
   implements TodoAttributes {
+  public id!: number;
   public text!: string;
   public isComplete!: boolean;
   public isArchived!: boolean;
@@ -32,9 +36,23 @@ class Todo
 
 Todo.init(
   {
-    text: DataTypes.STRING,
-    isComplete: DataTypes.BOOLEAN,
-    isArchived: DataTypes.BOOLEAN,
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    text: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isComplete:  {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    isArchived:  {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   },
   {
     sequelize,

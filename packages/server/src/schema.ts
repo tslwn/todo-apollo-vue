@@ -10,8 +10,17 @@ const schema = gql`
     updatedAt: String!
   }
 
+  enum Sort {
+    ASC
+    DESC
+  }
+
+  input TodoOrderByInput {
+    createdAt: Sort
+  }
+
   type Query {
-    todos: [Todo]!
+    todos(orderBy: TodoOrderByInput): [Todo]!
     todo(id: ID!): Todo
   }
 

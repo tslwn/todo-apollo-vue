@@ -1,6 +1,7 @@
 const resolvers = {
   Query: {
-    todos: (_, __, { dataSources }) => dataSources.todoAPI.getAllTodos(),
+    todos: (_, { orderBy }, { dataSources }) =>
+      dataSources.todoAPI.getAllTodos({ orderBy }),
     todo: (_, { id }, { dataSources }) =>
       dataSources.todoAPI.getTodoById({ id }),
   },
