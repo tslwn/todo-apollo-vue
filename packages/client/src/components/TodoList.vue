@@ -11,6 +11,15 @@ import gql from 'graphql-tag';
 import Vue from 'vue';
 import Todo from './Todo.vue';
 
+export const TODOS_QUERY = gql`{
+  todos {
+    id
+    text
+    isComplete
+    isArchived
+  }
+}`;
+
 export default Vue.extend({
   name: 'todo-list',
   components: {
@@ -18,14 +27,7 @@ export default Vue.extend({
   },
   data: () => ({ todos: [] }),
   apollo: {
-    todos: gql`{
-      todos {
-        id
-        text
-        isComplete
-        isArchived
-      }
-    }`,
+    todos: TODOS_QUERY,
   },
 });
 </script>
