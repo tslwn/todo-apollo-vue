@@ -21,7 +21,17 @@ export const TODOS_QUERY = gql`query ($filter: TodoFilterInput, $orderBy: TodoOr
   }
 }`;
 
-export const TODOS_VARIABLES = {
+export interface TodoInput {
+  filter?: {
+    isComplete?: boolean;
+    isArchived?: boolean
+  };
+  orderBy?: {
+    createdAt?: 'ASC' | 'DESC',
+  };
+}
+
+export const TODOS_VARIABLES: TodoInput = {
   filter: {
     isArchived: false,
   },

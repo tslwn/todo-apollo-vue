@@ -10,7 +10,7 @@
       <v-list-item-title v-text="todo.text"></v-list-item-title>
     </v-list-item-content>
     <v-list-item-icon>
-      <v-btn icon disabled>
+      <v-btn icon @click="onArchiveClick">
         <v-icon>{{ todo.isArchived ? 'mdi-delete-off' : 'mdi-delete' }}</v-icon>
       </v-btn>
     </v-list-item-icon>
@@ -19,6 +19,8 @@
 <script lang="ts">
 import gql from 'graphql-tag';
 import Vue, { PropType } from 'vue';
+
+import { TODOS_QUERY, TODOS_VARIABLES } from './TodoList.vue';
 
 // export from somewhere?
 interface Todo {
@@ -60,6 +62,75 @@ export default Vue.extend({
       })
         .catch(() => {
           this.todo.isComplete = !this.todo.isComplete;
+        });
+    },
+    onArchiveClick() {
+      const {
+        id, text, isComplete, isArchived,
+      } = this.todo;
+
+      this.$apollo.mutate({
+        mutation: gql`mutation ($id: ID!, $isArchived: Boolean!) {
+          changeTodoIsArchived(id: $id, isArchived: $isArchived) {
+            success
+            message
+            todo {
+              id
+              text
+              isComplete
+              isArchived
+            }
+          }
+        }`,
+        variables: {
+          id,
+          isArchived: !isArchived,
+        },
+        update: (store, { data: { changeTodoIsArchived } }) => {
+          const { message, success, todo } = changeTodoIsArchived;
+
+          if (!success) {
+            throw new Error(message);
+          }
+
+          const data = store.readQuery({
+            query: TODOS_QUERY,
+            variables: TODOS_VARIABLES,
+          });
+
+          // remove todo from query cache if not included by filter
+          const todoInFilter = TODOS_VARIABLES.filter.isArchived === undefined
+              || TODOS_VARIABLES.filter.isArchived === todo.isArchived;
+
+          if (!todoInFilter) {
+            store.writeQuery({
+              data: {
+                todos: data.todos.filter((item: Todo) => item.id !== todo.id),
+              },
+              query: TODOS_QUERY,
+              variables: TODOS_VARIABLES,
+            });
+          }
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          changeTodoIsArchived: {
+            message: 'Todo isArchived changed successfully',
+            success: true,
+            todo: {
+              __typename: 'Todo',
+              id,
+              text,
+              isComplete,
+              isArchived: !isArchived,
+            },
+            __typename: 'TodoUpdateResponse',
+          },
+        },
+      })
+        .catch((error) => {
+          console.error(error);
+          // this.todo.isArchived = !this.todo.isArchived;
         });
     },
   },
