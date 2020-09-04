@@ -128,9 +128,9 @@ export default Vue.extend({
           },
         },
       })
-        .catch((error) => {
-          console.error(error);
-          // this.todo.isArchived = !this.todo.isArchived;
+        .catch(() => {
+          // restore value
+          this.todo.isArchived = isArchived;
         });
     },
   },

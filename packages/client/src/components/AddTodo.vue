@@ -1,5 +1,10 @@
 <template>
-  <v-text-field v-model="text" v-on:keyup.enter="onEnter"></v-text-field>
+  <v-text-field
+    class="px-4"
+    placeholder="Add todo"
+    v-model="text"
+    v-on:keyup.enter="onEnter"
+  ></v-text-field>
 </template>
 
 <script lang="ts">

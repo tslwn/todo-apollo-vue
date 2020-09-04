@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <v-main>
-      <v-container fluid>
+      <v-container>
         <add-todo />
         <todo-list />
       </v-container>
