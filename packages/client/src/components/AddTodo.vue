@@ -24,6 +24,7 @@ export default Vue.extend({
 
       this.text = '';
 
+      // TODO: optimistic response breaks transition
       this.$apollo.mutate({
         mutation: gql`mutation ($text: String!) {
           addTodo(text: $text) {
@@ -52,30 +53,18 @@ export default Vue.extend({
             variables: TODOS_VARIABLES,
           });
 
-          // prepend todo in cache (most recent)
+          // add todo to cache
+          const todos = TODOS_VARIABLES.orderBy.createdAt === 'DESC'
+            ? [todo, ...data.todos]
+            : [...data.todos, todo];
+
           store.writeQuery({
             data: {
-              todos: [todo, ...data.todos],
+              todos,
             },
             query: TODOS_QUERY,
             variables: TODOS_VARIABLES,
           });
-        },
-        // export somewhere as constant?
-        optimisticResponse: {
-          __typename: 'Mutation',
-          addTodo: {
-            message: 'Todo added successfully',
-            success: true,
-            todo: {
-              __typename: 'Todo',
-              id: -1,
-              text,
-              isComplete: false,
-              isArchived: false,
-            },
-            __typename: 'TodoUpdateResponse',
-          },
         },
       })
         .catch(() => {

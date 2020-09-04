@@ -1,8 +1,11 @@
 <template>
   <div>
-    <v-list>
+    <v-slide-x-transition
+      group
+      tag="v-list"
+    >
       <todo v-for="todo in todos" v-bind:key="todo.id" v-bind:todo="todo"></todo>
-    </v-list>
+    </v-slide-x-transition>
   </div>
 </template>
 
@@ -36,7 +39,7 @@ export const TODOS_VARIABLES: TodoInput = {
     isArchived: false,
   },
   orderBy: {
-    createdAt: 'DESC',
+    createdAt: 'ASC',
   },
 };
 
