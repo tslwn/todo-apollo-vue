@@ -15,12 +15,17 @@ const schema = gql`
     DESC
   }
 
+  input TodoFilterInput {
+    isComplete: Boolean
+    isArchived: Boolean
+  }
+
   input TodoOrderByInput {
     createdAt: Sort
   }
 
   type Query {
-    todos(orderBy: TodoOrderByInput): [Todo]!
+    todos(filter: TodoFilterInput, orderBy: TodoOrderByInput): [Todo]!
     todo(id: ID!): Todo
   }
 

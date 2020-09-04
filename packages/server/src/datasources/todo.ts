@@ -16,11 +16,11 @@ class TodoAPI extends DataSource {
     this.context = config.context;
   }
 
-  async getAllTodos({ orderBy }): Promise<Todo[] | Error> {
+  async getAllTodos({ filter, orderBy }): Promise<Todo[] | Error> {
     try {
       const order = Object.keys(orderBy).map(key => [key, orderBy[key]]) as OrderItem[];
 
-      const todos = await Todo.findAll({ order });
+      const todos = await Todo.findAll({ order, where: filter });
       return todos;
     } catch (err) {
       return new Error(err);

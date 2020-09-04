@@ -11,7 +11,7 @@
     </v-list-item-content>
     <v-list-item-icon>
       <v-btn icon disabled>
-        <v-icon>{{ todo.isArchived ? 'mdi-archive-arrow-up' : 'mdi-archive' }}</v-icon>
+        <v-icon>{{ todo.isArchived ? 'mdi-delete-off' : 'mdi-delete' }}</v-icon>
       </v-btn>
     </v-list-item-icon>
   </v-list-item>

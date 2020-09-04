@@ -12,8 +12,8 @@ import Vue from 'vue';
 import Todo from './Todo.vue';
 
 // move to graphql directory or similar
-export const TODOS_QUERY = gql`query ($orderBy: TodoOrderByInput){
-  todos(orderBy: $orderBy) {
+export const TODOS_QUERY = gql`query ($filter: TodoFilterInput, $orderBy: TodoOrderByInput){
+  todos(filter: $filter, orderBy: $orderBy) {
     id
     text
     isComplete
@@ -22,6 +22,9 @@ export const TODOS_QUERY = gql`query ($orderBy: TodoOrderByInput){
 }`;
 
 export const TODOS_VARIABLES = {
+  filter: {
+    isArchived: false,
+  },
   orderBy: {
     createdAt: 'DESC',
   },

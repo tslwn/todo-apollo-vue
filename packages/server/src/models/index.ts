@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
 
-import database from '../sequelize.config';
+import database from '../sequelize.config.json';
 
 const env = process.env.NODE_ENV || 'development';
 const config = database[env];
