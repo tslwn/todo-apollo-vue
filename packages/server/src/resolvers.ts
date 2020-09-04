@@ -11,7 +11,6 @@ const resolvers = {
       const todo = await dataSources.todoAPI.addTodo({
         text,
       });
-      console.log(todo);
       if (todo instanceof Error) {
         return {
           success: false,

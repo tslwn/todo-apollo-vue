@@ -6,7 +6,7 @@
 import gql from 'graphql-tag';
 import Vue from 'vue';
 
-import { TODOS_QUERY } from './TodoList.vue';
+import { TODOS_QUERY, TODOS_VARIABLES } from './TodoList.vue';
 
 export default Vue.extend({
   name: 'add-todo',
@@ -42,11 +42,19 @@ export default Vue.extend({
             throw new Error(message);
           }
 
-          const data = store.readQuery({ query: TODOS_QUERY });
+          const data = store.readQuery({
+            query: TODOS_QUERY,
+            variables: TODOS_VARIABLES,
+          });
 
-          data.todos.push(todo);
-
-          store.writeQuery({ query: TODOS_QUERY, data });
+          // prepend todo in cache (most recent)
+          store.writeQuery({
+            data: {
+              todos: [todo, ...data.todos],
+            },
+            query: TODOS_QUERY,
+            variables: TODOS_VARIABLES,
+          });
         },
         // export somewhere as constant?
         optimisticResponse: {

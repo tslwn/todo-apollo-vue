@@ -11,6 +11,7 @@ import gql from 'graphql-tag';
 import Vue from 'vue';
 import Todo from './Todo.vue';
 
+// move to graphql directory or similar
 export const TODOS_QUERY = gql`query ($orderBy: TodoOrderByInput){
   todos(orderBy: $orderBy) {
     id
@@ -19,6 +20,12 @@ export const TODOS_QUERY = gql`query ($orderBy: TodoOrderByInput){
     isArchived
   }
 }`;
+
+export const TODOS_VARIABLES = {
+  orderBy: {
+    createdAt: 'DESC',
+  },
+};
 
 export default Vue.extend({
   name: 'todo-list',
@@ -29,11 +36,7 @@ export default Vue.extend({
   apollo: {
     todos: {
       query: TODOS_QUERY,
-      variables: {
-        orderBy: {
-          createdAt: 'ASC',
-        },
-      },
+      variables: TODOS_VARIABLES,
     },
   },
 });
