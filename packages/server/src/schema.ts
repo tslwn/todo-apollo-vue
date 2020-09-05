@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server';
-import { Todo } from 'types/todo.types';
+import { Todo, TodoAttributes } from 'types/todo.types';
 
 const schema = gql`
   type Todo {
@@ -49,14 +49,28 @@ export enum Sort {
   DESC
 }
 
-export interface TodoFilterInput {
-  isComplete?: boolean;
-  isArchived?: boolean;
+export type TodosFilterInput = Partial<Pick<Todo, 'isComplete' | 'isArchived'>>;
+
+type TodosOrderByInputKey = keyof Pick<Todo, 'createdAt'>;
+
+export type TodosOrderByInput = {
+  [index: string]: { [K in TodosOrderByInputKey]?: Sort };
+};
+
+export interface TodosInput {
+  filter?: TodosFilterInput;
+  orderBy?: TodosOrderByInput;
 }
 
-export interface TodoOrderByInput {
-  createdAt?: Sort;
-}
+export type TodoInput = Pick<Todo, 'id'>;
+
+export type AddTodoInput = Pick<Todo, 'text'>;
+
+export type ChangeTodoTextInput = Pick<Todo, 'id' | 'text'>;
+
+export type ChangeTodoIsCompleteInput = Pick<Todo, 'id' | 'isComplete'>;
+
+export type ChangeTodoIsArchivedInput = Pick<Todo, 'id' | 'isArchived'>;
 
 export interface TodoUpdateResponse {
   success: boolean;

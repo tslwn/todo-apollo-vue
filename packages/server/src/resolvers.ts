@@ -1,17 +1,27 @@
-import { TodoUpdateResponse } from 'schema';
+import {
+  TodoUpdateResponse,
+  TodosInput,
+  TodoInput,
+  AddTodoInput,
+  ChangeTodoTextInput,
+  ChangeTodoIsCompleteInput,
+  ChangeTodoIsArchivedInput
+} from 'schema';
+import { Context } from 'index';
+import { IResolvers } from 'apollo-server';
 
-const resolvers = {
+const resolvers: IResolvers<any, Context> = {
   Query: {
-    todos: (_, { filter, orderBy }, { dataSources }) =>
+    todos: (_, { filter, orderBy }: TodosInput, { dataSources }) =>
       dataSources.todoAPI.getAllTodos({ filter, orderBy }),
-    todo: (_, { id }, { dataSources }) =>
+    todo: (_, { id }: TodoInput, { dataSources }) =>
       dataSources.todoAPI.getTodoById({ id })
   },
   Mutation: {
     // TODO: refactor return/error logic
     addTodo: async (
       _,
-      { text },
+      { text }: AddTodoInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.addTodo({
@@ -31,7 +41,7 @@ const resolvers = {
     },
     changeTodoText: async (
       _,
-      { id, text },
+      { id, text }: ChangeTodoTextInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoText({
@@ -52,7 +62,7 @@ const resolvers = {
     },
     changeTodoIsComplete: async (
       _,
-      { id, isComplete },
+      { id, isComplete }: ChangeTodoIsCompleteInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoIsComplete({
@@ -73,7 +83,7 @@ const resolvers = {
     },
     changeTodoIsArchived: async (
       _,
-      { id, isArchived },
+      { id, isArchived }: ChangeTodoIsArchivedInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoIsArchived({

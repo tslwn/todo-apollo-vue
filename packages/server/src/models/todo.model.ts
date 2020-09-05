@@ -1,23 +1,23 @@
-import { Sequelize } from 'sequelize/types';
+import { Sequelize, DataTypes } from 'sequelize/types';
 import { Todo } from '../types/todo.types';
 
-module.exports = (sequelize: Sequelize, DataTypes) => {
+module.exports = (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   const TodoModel = sequelize.define<Todo>('Todo', {
     id: {
-      type: DataTypes.INTEGER,
+      type: dataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
     text: {
-      type: DataTypes.STRING,
+      type: dataTypes.STRING,
       allowNull: false
     },
     isComplete: {
-      type: DataTypes.BOOLEAN,
+      type: dataTypes.BOOLEAN,
       allowNull: false
     },
     isArchived: {
-      type: DataTypes.BOOLEAN,
+      type: dataTypes.BOOLEAN,
       allowNull: false
     }
   });

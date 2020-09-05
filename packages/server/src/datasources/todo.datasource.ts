@@ -2,7 +2,13 @@ import { DataSource } from 'apollo-datasource';
 import { Sequelize, OrderItem, ModelCtor } from 'sequelize';
 
 import { Todo } from '../types/todo.types';
-import { TodoFilterInput, TodoOrderByInput } from 'schema';
+import {
+  TodosInput,
+  AddTodoInput,
+  ChangeTodoTextInput,
+  ChangeTodoIsCompleteInput,
+  ChangeTodoIsArchivedInput
+} from 'schema';
 
 class TodoAPI extends DataSource {
   public model: ModelCtor<Todo>;
@@ -17,18 +23,11 @@ class TodoAPI extends DataSource {
     this.context = config.context;
   }
 
-  async getAllTodos({
-    filter,
-    orderBy
-  }: {
-    filter: TodoFilterInput;
-    orderBy: TodoOrderByInput;
-  }): Promise<Todo[] | Error> {
+  async getAllTodos({ filter, orderBy }: TodosInput): Promise<Todo[] | Error> {
     try {
-      const order = Object.keys(orderBy).map(key => [
-        key,
-        orderBy[key]
-      ]) as OrderItem[];
+      const order = orderBy
+        ? (Object.keys(orderBy).map(key => [key, orderBy[key]]) as OrderItem[])
+        : undefined;
 
       const todos = await this.model.findAll({ order, where: filter });
       return todos;
@@ -49,7 +48,7 @@ class TodoAPI extends DataSource {
     }
   }
 
-  async addTodo({ text }: { text: Todo['text'] }): Promise<Todo | Error> {
+  async addTodo({ text }: AddTodoInput): Promise<Todo | Error> {
     try {
       const todo = await this.model.create({
         text,
@@ -77,7 +76,7 @@ class TodoAPI extends DataSource {
   async changeTodoText({
     id,
     text
-  }: Pick<Todo, 'id' | 'text'>): Promise<Todo | Error> {
+  }: ChangeTodoTextInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(
         { text },
@@ -92,7 +91,7 @@ class TodoAPI extends DataSource {
   async changeTodoIsComplete({
     id,
     isComplete
-  }: Pick<Todo, 'id' | 'isComplete'>): Promise<Todo | Error> {
+  }: ChangeTodoIsCompleteInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(
         { isComplete },
@@ -107,7 +106,7 @@ class TodoAPI extends DataSource {
   async changeTodoIsArchived({
     id,
     isArchived
-  }: Pick<Todo, 'id' | 'isArchived'>): Promise<Todo | Error> {
+  }: ChangeTodoIsArchivedInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(
         { isArchived },
