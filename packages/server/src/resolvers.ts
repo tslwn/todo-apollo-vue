@@ -1,3 +1,5 @@
+import { IResolvers } from 'apollo-server';
+import { Context } from 'index';
 import {
   TodoUpdateResponse,
   TodosInput,
@@ -7,8 +9,28 @@ import {
   ChangeTodoIsCompleteInput,
   ChangeTodoIsArchivedInput
 } from 'schema';
-import { Context } from 'index';
-import { IResolvers } from 'apollo-server';
+import TodoAPI from 'datasources/todo.datasource';
+import { Todo } from 'types/todo.types';
+
+const todoUpdate = async <T>(
+  context: TodoAPI,
+  func: (args: T) => Promise<Todo | Error>,
+  args: T,
+  message: string
+) => {
+  const todoOrError = await func.bind(context)(args);
+  if (todoOrError instanceof Error) {
+    return {
+      success: false,
+      message: todoOrError.message
+    };
+  }
+  return {
+    success: true,
+    message,
+    todo: todoOrError
+  };
+};
 
 const resolvers: IResolvers<any, Context> = {
   Query: {
@@ -18,89 +40,53 @@ const resolvers: IResolvers<any, Context> = {
       dataSources.todoAPI.getTodoById({ id })
   },
   Mutation: {
-    // TODO: refactor return/error logic
     addTodo: async (
       _,
-      { text }: AddTodoInput,
+      args: AddTodoInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
-      const todo = await dataSources.todoAPI.addTodo({
-        text
-      });
-      if (todo instanceof Error) {
-        return {
-          success: false,
-          message: todo.message
-        };
-      }
-      return {
-        success: true,
-        message: 'Todo added successfully',
-        todo: todo
-      };
+      return await todoUpdate(
+        dataSources.todoAPI,
+        dataSources.todoAPI.addTodo,
+        args,
+        'Todo added successfully'
+      );
     },
     changeTodoText: async (
       _,
-      { id, text }: ChangeTodoTextInput,
+      args: ChangeTodoTextInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
-      const todo = await dataSources.todoAPI.changeTodoText({
-        id,
-        text
-      });
-      if (todo instanceof Error) {
-        return {
-          success: false,
-          message: todo.message
-        };
-      }
-      return {
-        success: true,
-        message: 'Todo text changed successfully',
-        todo: todo
-      };
+      return await todoUpdate(
+        dataSources.todoAPI,
+        dataSources.todoAPI.changeTodoText,
+        args,
+        'Todo text changed successfully'
+      );
     },
     changeTodoIsComplete: async (
       _,
-      { id, isComplete }: ChangeTodoIsCompleteInput,
+      args: ChangeTodoIsCompleteInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
-      const todo = await dataSources.todoAPI.changeTodoIsComplete({
-        id,
-        isComplete
-      });
-      if (todo instanceof Error) {
-        return {
-          success: false,
-          message: todo.message
-        };
-      }
-      return {
-        success: true,
-        message: 'Todo isComplete changed successfully',
-        todo: todo
-      };
+      return await todoUpdate(
+        dataSources.todoAPI,
+        dataSources.todoAPI.changeTodoIsComplete,
+        args,
+        'Todo isComplete changed successfully'
+      );
     },
     changeTodoIsArchived: async (
       _,
-      { id, isArchived }: ChangeTodoIsArchivedInput,
+      args: ChangeTodoIsArchivedInput,
       { dataSources }
     ): Promise<TodoUpdateResponse> => {
-      const todo = await dataSources.todoAPI.changeTodoIsArchived({
-        id,
-        isArchived
-      });
-      if (todo instanceof Error) {
-        return {
-          success: false,
-          message: todo.message
-        };
-      }
-      return {
-        success: true,
-        message: 'Todo isArchived changed successfully',
-        todo: todo
-      };
+      return await todoUpdate(
+        dataSources.todoAPI,
+        dataSources.todoAPI.changeTodoIsArchived,
+        args,
+        'Todo isArchived changed successfully'
+      );
     }
   }
 };
