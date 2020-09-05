@@ -7,10 +7,9 @@ export interface TodoAttributes {
   isArchived: boolean;
 }
 
-export type TodoCreationAttributes = Optional<TodoAttributes, 'id'>
+export type TodoCreationAttributes = Optional<TodoAttributes, 'id'>;
 
-export class Todo
-  extends Model<TodoAttributes, TodoCreationAttributes>
+export class Todo extends Model<TodoAttributes, TodoCreationAttributes>
   implements TodoAttributes {
   public id!: number;
   public text!: string;

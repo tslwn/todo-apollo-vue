@@ -1,36 +1,19 @@
+/* eslint-disable no-undef */
 module.exports = {
-  'env': {
-    'browser': true,
-    'es2020': true
+  env: {
+    browser: true,
+    es2020: true
   },
-  'extends': [
+  extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'eslint-config-prettier'
   ],
-  'parser': '@typescript-eslint/parser',
-  'parserOptions': {
-    'ecmaVersion': 12,
-    'sourceType': 'module'
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module'
   },
-  'plugins': [
-    '@typescript-eslint'
-  ],
-  'rules': {
-    'indent': [
-      'error',
-      2
-    ],
-    'linebreak-style': [
-      'off',
-      'windows'
-    ],
-    'quotes': [
-      'error',
-      'single'
-    ],
-    'semi': [
-      'error',
-      'always'
-    ]
-  },
+  plugins: ['@typescript-eslint'],
+  rules: {}
 };

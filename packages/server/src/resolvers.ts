@@ -1,80 +1,98 @@
+import { TodoUpdateResponse } from 'schema';
+
 const resolvers = {
   Query: {
-    todos: (_, { filter, orderBy }, { dataSources }) => 
+    todos: (_, { filter, orderBy }, { dataSources }) =>
       dataSources.todoAPI.getAllTodos({ filter, orderBy }),
     todo: (_, { id }, { dataSources }) =>
-      dataSources.todoAPI.getTodoById({ id }),
+      dataSources.todoAPI.getTodoById({ id })
   },
   Mutation: {
     // TODO: refactor return/error logic
-    addTodo: async (_, { text }, { dataSources }) => {
+    addTodo: async (
+      _,
+      { text },
+      { dataSources }
+    ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.addTodo({
-        text,
+        text
       });
       if (todo instanceof Error) {
         return {
           success: false,
-          message: todo.message,
+          message: todo.message
         };
       }
       return {
         success: true,
         message: 'Todo added successfully',
-        todo: todo,
+        todo: todo
       };
     },
-    changeTodoText: async (_, { id, text }, { dataSources }) => {
+    changeTodoText: async (
+      _,
+      { id, text },
+      { dataSources }
+    ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoText({
         id,
-        text,
+        text
       });
       if (todo instanceof Error) {
         return {
           success: false,
-          message: todo.message,
+          message: todo.message
         };
       }
       return {
         success: true,
         message: 'Todo text changed successfully',
-        todo: todo,
+        todo: todo
       };
     },
-    changeTodoIsComplete: async (_, { id, isComplete }, { dataSources }) => {
+    changeTodoIsComplete: async (
+      _,
+      { id, isComplete },
+      { dataSources }
+    ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoIsComplete({
         id,
-        isComplete,
+        isComplete
       });
       if (todo instanceof Error) {
         return {
           success: false,
-          message: todo.message,
+          message: todo.message
         };
       }
       return {
         success: true,
         message: 'Todo isComplete changed successfully',
-        todo: todo,
+        todo: todo
       };
     },
-    changeTodoIsArchived: async (_, { id, isArchived }, { dataSources }) => {
+    changeTodoIsArchived: async (
+      _,
+      { id, isArchived },
+      { dataSources }
+    ): Promise<TodoUpdateResponse> => {
       const todo = await dataSources.todoAPI.changeTodoIsArchived({
         id,
-        isArchived,
+        isArchived
       });
       if (todo instanceof Error) {
         return {
           success: false,
-          message: todo.message,
+          message: todo.message
         };
       }
       return {
         success: true,
         message: 'Todo isArchived changed successfully',
-        todo: todo,
+        todo: todo
       };
-    },
-  },
+    }
+  }
 };
 
 export default resolvers;

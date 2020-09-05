@@ -50,18 +50,18 @@ export enum Sort {
 }
 
 export interface TodoFilterInput {
-  isComplete?: boolean
-  isArchived?: boolean
+  isComplete?: boolean;
+  isArchived?: boolean;
 }
 
 export interface TodoOrderByInput {
-  createdAt?: Sort
+  createdAt?: Sort;
 }
 
 export interface TodoUpdateResponse {
-  success: boolean
-  message: string
-  todo: Todo
+  success: boolean;
+  message?: string;
+  todo?: Todo;
 }
 
 export default schema;
