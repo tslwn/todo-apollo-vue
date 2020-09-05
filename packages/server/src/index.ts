@@ -1,14 +1,35 @@
 import { ApolloServer } from 'apollo-server';
+import { Sequelize, DataTypes } from 'sequelize';
+
 import resolvers from './resolvers';
 import typeDefs from './schema';
-import db from './models';
-import TodoAPI from './datasources/todo';
+import TodoAPI from './datasources/todo.datasource';
+
+import sequelizeConfig from './sequelize.config.json';
+
+const env = process.env.NODE_ENV || 'development';
+const { database, username, password, ...config } = sequelizeConfig[env];
+
+const sequelize = new Sequelize(
+  database,
+  username,
+  password,
+  config
+);
+
+const modelDefiners = [
+  require('./models/todo.model')
+];
+
+for (const modelDefiner of modelDefiners) {
+  modelDefiner(sequelize, DataTypes);
+}
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
-    todoAPI: new TodoAPI({ sequelize: db.sequelize }),
+    todoAPI: new TodoAPI({ sequelize }),
   }),
 });
 

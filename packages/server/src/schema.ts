@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server';
+import { Todo } from 'types/todo.types';
 
 const schema = gql`
   type Todo {
@@ -42,5 +43,25 @@ const schema = gql`
     changeTodoIsArchived(id: ID!, isArchived: Boolean!): TodoUpdateResponse!
   }
 `;
+
+export enum Sort {
+  ASC,
+  DESC
+}
+
+export interface TodoFilterInput {
+  isComplete?: boolean
+  isArchived?: boolean
+}
+
+export interface TodoOrderByInput {
+  createdAt?: Sort
+}
+
+export interface TodoUpdateResponse {
+  success: boolean
+  message: string
+  todo: Todo
+}
 
 export default schema;

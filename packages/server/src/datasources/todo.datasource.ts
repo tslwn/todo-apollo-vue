@@ -1,35 +1,37 @@
 import { DataSource } from 'apollo-datasource';
-import { Sequelize, OrderItem } from 'sequelize';
+import { Sequelize, OrderItem, ModelCtor } from 'sequelize';
 
-import { Todo } from '../models';
+import { Todo } from '../types/todo.types';
+import { TodoFilterInput, TodoOrderByInput } from 'schema';
 
 class TodoAPI extends DataSource {
-  public sequelize: Sequelize;
-  public context: any;
+  public model: ModelCtor<Todo>;
+  public context!: any;
 
   constructor({ sequelize }: { sequelize: Sequelize }) {
     super();
-    this.sequelize = sequelize;
+    this.model = sequelize.models['Todo'] as ModelCtor<Todo>;
   }
 
   initialize(config: any): void {
     this.context = config.context;
   }
 
-  async getAllTodos({ filter, orderBy }): Promise<Todo[] | Error> {
+  async getAllTodos({ filter, orderBy }: { filter: TodoFilterInput, orderBy: TodoOrderByInput }): Promise<Todo[] | Error> {
     try {
       const order = Object.keys(orderBy).map(key => [key, orderBy[key]]) as OrderItem[];
-
-      const todos = await Todo.findAll({ order, where: filter });
+      
+      const todos = await this.model.findAll({ order, where: filter });
       return todos;
     } catch (err) {
+      console.error(err);
       return new Error(err);
     }
   }
 
   async getTodoById({ id }: { id: Todo['id'] }): Promise<Todo | Error> {
     try {
-      const todos = await Todo.findAll({
+      const todos = await this.model.findAll({
         where: {
           id,
         },
@@ -43,7 +45,7 @@ class TodoAPI extends DataSource {
 
   async addTodo({ text }: { text: Todo['text'] }): Promise<Todo | Error> {
     try {
-      const todo = await Todo.create({
+      const todo = await this.model.create({
         text,
         isComplete: false,
         isArchived: false,
@@ -71,7 +73,7 @@ class TodoAPI extends DataSource {
       const [
         countAffected,
         rowsAffected,
-      ] = await Todo.update(
+      ] = await this.model.update(
         { text },
         { returning: true, where: { id } }
       );
@@ -86,7 +88,7 @@ class TodoAPI extends DataSource {
       const [
         countAffected,
         rowsAffected,
-      ] = await Todo.update(
+      ] = await this.model.update(
         { isComplete },
         { returning: true, where: { id } }
       );
@@ -101,7 +103,7 @@ class TodoAPI extends DataSource {
       const [
         countAffected,
         rowsAffected,
-      ] = await Todo.update(
+      ] = await this.model.update(
         { isArchived },
         { returning: true, where: { id } }
       );
