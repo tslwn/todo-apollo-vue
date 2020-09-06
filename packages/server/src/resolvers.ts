@@ -12,6 +12,7 @@ import {
 import TodoAPI from 'datasources/todo.datasource';
 import { Todo } from 'types/todo.types';
 
+// TODO: move to datasource?
 const todoUpdate = async <T>(
   context: TodoAPI,
   func: (args: T) => Promise<Todo | Error>,

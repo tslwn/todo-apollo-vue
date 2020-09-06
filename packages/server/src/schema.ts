@@ -45,16 +45,16 @@ const schema = gql`
 `;
 
 export enum Sort {
-  ASC,
-  DESC
+  Asc = 'ASC',
+  Desc = 'DESC'
 }
 
 export type TodosFilterInput = Partial<Pick<Todo, 'isComplete' | 'isArchived'>>;
 
-type TodosOrderByInputKey = keyof Pick<Todo, 'createdAt'>;
+export type TodosOrderByInputKey = keyof Pick<Todo, 'createdAt'>;
 
 export type TodosOrderByInput = {
-  [index: string]: { [K in TodosOrderByInputKey]?: Sort };
+  [K in TodosOrderByInputKey]?: Sort;
 };
 
 export interface TodosInput {

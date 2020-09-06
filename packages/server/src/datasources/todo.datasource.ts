@@ -3,11 +3,12 @@ import { Sequelize, OrderItem, ModelCtor } from 'sequelize';
 
 import { Todo } from '../types/todo.types';
 import {
-  TodosInput,
   AddTodoInput,
   ChangeTodoTextInput,
   ChangeTodoIsCompleteInput,
-  ChangeTodoIsArchivedInput
+  ChangeTodoIsArchivedInput,
+  TodosInput,
+  TodosOrderByInputKey
 } from 'schema';
 
 class TodoAPI extends DataSource {
@@ -25,8 +26,12 @@ class TodoAPI extends DataSource {
 
   async getAllTodos({ filter, orderBy }: TodosInput): Promise<Todo[] | Error> {
     try {
+      // TODO: overload ObjectConstructor instead?
       const order = orderBy
-        ? (Object.keys(orderBy).map(key => [key, orderBy[key]]) as OrderItem[])
+        ? ((Object.keys(orderBy) as Array<TodosOrderByInputKey>).map(key => [
+            key,
+            orderBy[key]
+          ]) as OrderItem[])
         : undefined;
 
       const todos = await this.model.findAll({ order, where: filter });
@@ -40,7 +45,7 @@ class TodoAPI extends DataSource {
     try {
       const todo = await this.model.findByPk(id);
       if (todo === null) {
-        return new Error('No todo found');
+        return new Error('No data found');
       }
       return todo;
     } catch (err) {
