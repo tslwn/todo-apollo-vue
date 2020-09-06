@@ -5,111 +5,158 @@ import TodoAPI from './todo.datasource';
 
 const todoAPI = new TodoAPI({ sequelize });
 
+// This must be in sync with the seed data
+const initialTodo = {
+  id: 1,
+  text: 'Buy milk',
+  isComplete: false,
+  isArchived: false
+};
+
+afterAll(() => {
+  sequelize.close();
+});
+
 test('model is defined', () => {
   expect(todoAPI.model).toBeDefined();
 });
 
-test('getAllTodos returns four todos with no filter', async () => {
-  const data = (await todoAPI.getAllTodos({})) as Todo[];
-  expect(data.length).toBe(4);
+describe('getAllTodos', () => {
+  test('returns four todos with no filter', async () => {
+    const todos = (await todoAPI.getAllTodos({})) as Todo[];
+    expect(todos.length).toBe(4);
+  });
+
+  test('returns two todos with filter isComplete', async () => {
+    const todos = (await todoAPI.getAllTodos({
+      filter: { isComplete: true }
+    })) as Todo[];
+    expect(todos.length).toBe(2);
+  });
+
+  test('returns todos in order', async () => {
+    const todos = (await todoAPI.getAllTodos({
+      orderBy: { createdAt: Sort.Desc }
+    })) as Todo[];
+    const sortedTodos = todos.sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+    expect(todos).toEqual(sortedTodos);
+  });
 });
 
-test('getAllTodos returns two todos with filter isComplete', async () => {
-  const data = (await todoAPI.getAllTodos({
-    filter: { isComplete: true }
-  })) as Todo[];
-  expect(data.length).toBe(2);
+describe('getTodoById', () => {
+  test('returns todo', async () => {
+    const todo = (await todoAPI.getTodoById({ id: initialTodo.id })) as Todo;
+    expect(todo).toMatchObject(initialTodo);
+  });
+
+  test('returns error when no data found', async () => {
+    const error = await todoAPI.getTodoById({
+      id: -1
+    });
+    expect(error).toBeInstanceOf(Error);
+  });
 });
 
-test('getAllTodos returns todos in order', async () => {
-  const data = (await todoAPI.getAllTodos({
-    orderBy: { createdAt: Sort.Desc }
-  })) as Todo[];
-  const sortedData = data.sort(
-    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-  );
-  expect(data).toEqual(sortedData);
+describe('addTodo', () => {
+  test('returns added todo when successful', async () => {
+    /**
+     * autoIncrement is true for the Todo model id field, so after the todos
+     * seed runs the next value is 5.
+     */
+    const addedTodo = {
+      id: 5,
+      text: 'Test addTodo',
+      isComplete: false,
+      isArchived: false
+    };
+    const todo = (await todoAPI.addTodo({ text: addedTodo.text })) as Todo;
+
+    // Todo instance has other fields
+    expect(todo).toMatchObject(addedTodo);
+
+    // Delete instance to restore database
+    todo.destroy();
+  });
 });
 
-test('getTodoById returns todo', async () => {
-  const data = (await todoAPI.getTodoById({ id: 1 })) as Todo;
-  expect(data.text).toBe('Buy milk');
+describe('changeTodoText', () => {
+  test('returns changed todo when successful', async () => {
+    const changedTodo = {
+      ...initialTodo,
+      text: 'Test changeTodoText'
+    };
+    const todo = (await todoAPI.changeTodoText({
+      id: changedTodo.id,
+      text: changedTodo.text
+    })) as Todo;
+    expect(todo).toMatchObject(changedTodo);
+
+    // Update instance to restore database
+    todo.text = initialTodo.text;
+    todo.save();
+  });
+
+  test('returns error when no data found', async () => {
+    const error = await todoAPI.changeTodoText({
+      id: -1,
+      text: 'Test changeTodoText'
+    });
+    expect(error).toBeInstanceOf(Error);
+  });
 });
 
-test('getTodoById returns error when no data found', async () => {
-  const data = (await todoAPI.getTodoById({ id: -1 })) as Todo;
-  expect(data).toBeInstanceOf(Error);
+describe('changeTodoIsComplete', () => {
+  test('returns changed todo when successful', async () => {
+    const changedTodo = {
+      ...initialTodo,
+      isComplete: true
+    };
+    const todo = (await todoAPI.changeTodoIsComplete({
+      id: changedTodo.id,
+      isComplete: changedTodo.isComplete
+    })) as Todo;
+    expect(todo).toMatchObject(changedTodo);
+
+    // Update instance to restore database
+    todo.isComplete = initialTodo.isComplete;
+    todo.save();
+  });
+
+  test('returns error when no data found', async () => {
+    const error = await todoAPI.changeTodoIsComplete({
+      id: -1,
+      isComplete: true
+    });
+    expect(error).toBeInstanceOf(Error);
+  });
 });
 
-test('addTodo returns todo', async () => {
-  /**
-   * autoIncrement is true for the Todo model id field, so after the todos seed
-   * runs the next value is 5.
-   */
-  const todo = {
-    id: 5,
-    text: 'Test addTodo',
-    isComplete: false,
-    isArchived: false
-  };
-  const data = (await todoAPI.addTodo({ text: todo.text })) as Todo;
+describe('changeTodoIsArchived', () => {
+  test('returns changed todo when successful', async () => {
+    const changedTodo = {
+      ...initialTodo,
+      isArchived: true
+    };
+    const todo = (await todoAPI.changeTodoIsArchived({
+      id: changedTodo.id,
+      isArchived: changedTodo.isArchived
+    })) as Todo;
+    expect(todo).toMatchObject(changedTodo);
 
-  // Todo instance has other fields
-  expect(data).toMatchObject(todo);
-});
+    // Update instance to restore database
+    todo.isArchived = initialTodo.isArchived;
+    todo.save();
+  });
 
-test('changeTodoText returns todo', async () => {
-  const args = {
-    id: 5,
-    text: 'Test changeTodoText'
-  };
-  const data = (await todoAPI.changeTodoText({ ...args })) as Todo;
-  expect(data).toMatchObject(args);
-});
-
-test('changeTodoText returns error when no data found', async () => {
-  const args = {
-    id: -1,
-    text: 'Test changeTodoText'
-  };
-  const data = await todoAPI.changeTodoText({ ...args });
-  expect(data).toBeInstanceOf(Error);
-});
-
-test('changeTodoIsComplete returns todo', async () => {
-  const args = {
-    id: 5,
-    isComplete: true
-  };
-  const data = (await todoAPI.changeTodoIsComplete({ ...args })) as Todo;
-  expect(data).toMatchObject(args);
-});
-
-test('changeTodoIsComplete returns error when no data found', async () => {
-  const args = {
-    id: -1,
-    isComplete: true
-  };
-  const data = await todoAPI.changeTodoIsComplete({ ...args });
-  expect(data).toBeInstanceOf(Error);
-});
-
-test('changeTodoIsArchived returns todo', async () => {
-  const args = {
-    id: 5,
-    isArchived: true
-  };
-  const data = (await todoAPI.changeTodoIsArchived({ ...args })) as Todo;
-  expect(data).toMatchObject(args);
-});
-
-test('changeTodoIsArchived returns error when no data found', async () => {
-  const args = {
-    id: -1,
-    isArchived: true
-  };
-  const data = await todoAPI.changeTodoIsArchived({ ...args });
-  expect(data).toBeInstanceOf(Error);
+  test('returns error when no data found', async () => {
+    const error = await todoAPI.changeTodoIsArchived({
+      id: -1,
+      isArchived: true
+    });
+    expect(error).toBeInstanceOf(Error);
+  });
 });
 
 export {};
