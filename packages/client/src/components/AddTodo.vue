@@ -8,10 +8,9 @@
 </template>
 
 <script lang="ts">
-import gql from 'graphql-tag';
 import Vue from 'vue';
-
-import { TODOS_QUERY, TODOS_VARIABLES } from './TodoList.vue';
+import { addTodoMutation, todosQuery } from '../graphql';
+import { TODOS_VARIABLES } from './TodoList.vue';
 
 export default Vue.extend({
   name: 'add-todo',
@@ -27,20 +26,7 @@ export default Vue.extend({
       // TODO: optimistic response breaks transition
       this.$apollo
         .mutate({
-          mutation: gql`
-            mutation($text: String!) {
-              addTodo(text: $text) {
-                success
-                message
-                todo {
-                  id
-                  text
-                  isComplete
-                  isArchived
-                }
-              }
-            }
-          `,
+          mutation: addTodoMutation,
           variables: {
             text,
           },
@@ -52,7 +38,7 @@ export default Vue.extend({
             }
 
             const data = store.readQuery({
-              query: TODOS_QUERY,
+              query: todosQuery,
               variables: TODOS_VARIABLES,
             });
 
@@ -66,7 +52,7 @@ export default Vue.extend({
               data: {
                 todos,
               },
-              query: TODOS_QUERY,
+              query: todosQuery,
               variables: TODOS_VARIABLES,
             });
           },

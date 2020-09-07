@@ -11,21 +11,9 @@
 </template>
 
 <script lang="ts">
-import gql from 'graphql-tag';
 import Vue from 'vue';
 import Todo from './Todo.vue';
-
-// move to graphql directory or similar
-export const TODOS_QUERY = gql`
-  query($filter: TodoFilterInput, $orderBy: TodoOrderByInput) {
-    todos(filter: $filter, orderBy: $orderBy) {
-      id
-      text
-      isComplete
-      isArchived
-    }
-  }
-`;
+import todosQuery from '../graphql/todos.query';
 
 export interface TodoInput {
   filter?: {
@@ -54,7 +42,7 @@ export default Vue.extend({
   data: () => ({ todos: [] }),
   apollo: {
     todos: {
-      query: TODOS_QUERY,
+      query: todosQuery,
       variables: TODOS_VARIABLES,
     },
   },

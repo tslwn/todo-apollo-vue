@@ -14,10 +14,13 @@
   </v-list-item>
 </template>
 <script lang="ts">
-import gql from 'graphql-tag';
 import Vue, { PropType } from 'vue';
-
-import { TODOS_QUERY, TODOS_VARIABLES } from './TodoList.vue';
+import {
+  changeTodoIsArchivedMutation,
+  changeTodoIsCompleteMutation,
+  todosQuery,
+} from '../graphql';
+import { TODOS_VARIABLES } from './TodoList.vue';
 
 // export from somewhere?
 interface Todo {
@@ -41,20 +44,7 @@ export default Vue.extend({
 
       this.$apollo
         .mutate({
-          mutation: gql`
-            mutation($id: ID!, $isComplete: Boolean!) {
-              changeTodoIsComplete(id: $id, isComplete: $isComplete) {
-                success
-                message
-                todo {
-                  id
-                  text
-                  isComplete
-                  isArchived
-                }
-              }
-            }
-          `,
+          mutation: changeTodoIsCompleteMutation,
           variables: {
             id,
             isComplete,
@@ -69,20 +59,7 @@ export default Vue.extend({
 
       this.$apollo
         .mutate({
-          mutation: gql`
-            mutation($id: ID!, $isArchived: Boolean!) {
-              changeTodoIsArchived(id: $id, isArchived: $isArchived) {
-                success
-                message
-                todo {
-                  id
-                  text
-                  isComplete
-                  isArchived
-                }
-              }
-            }
-          `,
+          mutation: changeTodoIsArchivedMutation,
           variables: {
             id,
             isArchived: !isArchived,
@@ -95,7 +72,7 @@ export default Vue.extend({
             }
 
             const data = store.readQuery({
-              query: TODOS_QUERY,
+              query: todosQuery,
               variables: TODOS_VARIABLES,
             });
 
@@ -109,7 +86,7 @@ export default Vue.extend({
                 data: {
                   todos: data.todos.filter((item: Todo) => item.id !== todo.id),
                 },
-                query: TODOS_QUERY,
+                query: todosQuery,
                 variables: TODOS_VARIABLES,
               });
             }
