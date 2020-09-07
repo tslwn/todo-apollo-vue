@@ -1,9 +1,16 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
-  "extends": ["plugin:vue/essential", "airbnb-base"],
+  "extends": [
+    "plugin:vue/essential",
+    "@vue/airbnb",
+    "@vue/typescript/recommended",
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint"
+  ],
   "parserOptions": {
     "ecmaVersion": 11,
     "parser": "@typescript-eslint/parser",

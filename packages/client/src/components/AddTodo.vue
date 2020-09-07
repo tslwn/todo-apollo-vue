@@ -25,48 +25,52 @@ export default Vue.extend({
       this.text = '';
 
       // TODO: optimistic response breaks transition
-      this.$apollo.mutate({
-        mutation: gql`mutation ($text: String!) {
-          addTodo(text: $text) {
-            success
-            message
-            todo {
-              id
-              text
-              isComplete
-              isArchived
+      this.$apollo
+        .mutate({
+          mutation: gql`
+            mutation($text: String!) {
+              addTodo(text: $text) {
+                success
+                message
+                todo {
+                  id
+                  text
+                  isComplete
+                  isArchived
+                }
+              }
             }
-          }
-        }`,
-        variables: {
-          text,
-        },
-        update: (store, { data: { addTodo } }) => {
-          const { message, success, todo } = addTodo;
+          `,
+          variables: {
+            text,
+          },
+          update: (store, { data: { addTodo } }) => {
+            const { message, success, todo } = addTodo;
 
-          if (!success) {
-            throw new Error(message);
-          }
+            if (!success) {
+              throw new Error(message);
+            }
 
-          const data = store.readQuery({
-            query: TODOS_QUERY,
-            variables: TODOS_VARIABLES,
-          });
+            const data = store.readQuery({
+              query: TODOS_QUERY,
+              variables: TODOS_VARIABLES,
+            });
 
-          // add todo to cache
-          const todos = TODOS_VARIABLES.orderBy.createdAt === 'DESC'
-            ? [todo, ...data.todos]
-            : [...data.todos, todo];
+            // add todo to cache
+            const todos =
+              TODOS_VARIABLES.orderBy.createdAt === 'DESC'
+                ? [todo, ...data.todos]
+                : [...data.todos, todo];
 
-          store.writeQuery({
-            data: {
-              todos,
-            },
-            query: TODOS_QUERY,
-            variables: TODOS_VARIABLES,
-          });
-        },
-      })
+            store.writeQuery({
+              data: {
+                todos,
+              },
+              query: TODOS_QUERY,
+              variables: TODOS_VARIABLES,
+            });
+          },
+        })
         .catch(() => {
           // restore user input
           this.text = text;
@@ -76,5 +80,4 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

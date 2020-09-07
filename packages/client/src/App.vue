@@ -23,5 +23,4 @@ export default Vue.extend({
 });
 </script>
 
-<style>
-</style>
+<style></style>
