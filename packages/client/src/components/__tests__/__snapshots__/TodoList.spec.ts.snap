@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TodoList.vue renders correctly 1`] = `
+<div>
+  <transition-group-stub tag="v-list" name="slide-x-transition"></transition-group-stub>
+</div>
+`;

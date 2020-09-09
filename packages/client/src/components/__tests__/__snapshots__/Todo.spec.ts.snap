@@ -1,40 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Todo.vue renders correctly 1`] = `
-<v-list-item-stub activeclass="" tag="div">
-  <v-list-item-action-stub>
-    <v-checkbox-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" ripple="true" valuecomparator="function deepEqual(a, b) {
-  if (a === b) return true;
+exports[`Todo.vue renders correctly with isComplete false, isArchived false 1`] = `
+<div tabindex="-1" class="v-list-item theme--light">
+  <div class="v-list-item__action">
+    <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+      <div class="v-input__control">
+        <div class="v-input__slot">
+          <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-3" role="checkbox" type="checkbox" value="">
+            <div class="v-input--selection-controls__ripple"></div>
+          </div>
+        </div>
+        <div class="v-messages theme--light">
+          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-list-item__content">
+    <div class="v-list-item__title">Add unit tests</div>
+  </div>
+  <div class="v-list-item__icon"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></div>
+</div>
+`;
 
-  if (a instanceof Date &amp;&amp; b instanceof Date) {
-    // If the values are Date, they were convert to timestamp with getTime and compare it
-    if (a.getTime() !== b.getTime()) return false;
-  }
-
-  if (a !== Object(a) || b !== Object(b)) {
-    // If the values aren't objects, they were already checked for equality
-    return false;
-  }
-
-  var props = Object.keys(a);
-
-  if (props.length !== Object.keys(b).length) {
-    // Different number of props, don't bother to check
-    return false;
-  }
-
-  return props.every(function (p) {
-    return deepEqual(a[p], b[p]);
-  });
-}" indeterminateicon="$checkboxIndeterminate" officon="$checkboxOff" onicon="$checkboxOn"></v-checkbox-stub>
-  </v-list-item-action-stub>
-  <v-list-item-content-stub>
-    <v-list-item-title-stub></v-list-item-title-stub>
-  </v-list-item-content-stub>
-  <v-list-item-icon-stub>
-    <v-btn-stub tag="button" activeclass="" icon="true" type="button">
-      <v-icon-stub>mdi-delete</v-icon-stub>
-    </v-btn-stub>
-  </v-list-item-icon-stub>
-</v-list-item-stub>
+exports[`Todo.vue renders correctly with isComplete true, isArchived true 1`] = `
+<div tabindex="-1" class="v-list-item theme--light">
+  <div class="v-list-item__action">
+    <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--checkbox primary--text">
+      <div class="v-input__control">
+        <div class="v-input__slot">
+          <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-marked theme--light primary--text"></i><input aria-checked="true" id="input-12" role="checkbox" type="checkbox" value="">
+            <div class="v-input--selection-controls__ripple primary--text"></div>
+          </div>
+        </div>
+        <div class="v-messages theme--light primary--text">
+          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-list-item__content">
+    <div class="v-list-item__title">Add unit tests</div>
+  </div>
+  <div class="v-list-item__icon"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete-off theme--light"></i></span></button></div>
+</div>
 `;
