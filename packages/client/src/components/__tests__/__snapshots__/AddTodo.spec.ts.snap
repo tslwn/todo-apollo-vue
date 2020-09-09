@@ -1,10 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AddTodo.vue renders correctly 1`] = `
-<div class="v-input px-4 theme--light v-text-field v-text-field--placeholder" text="Add unit tests">
+exports[`AddTodo.vue renders correctly with text 1`] = `
+<div class="v-input px-4 theme--light v-text-field v-text-field--placeholder">
   <div class="v-input__control">
     <div class="v-input__slot">
-      <div class="v-text-field__slot"><input id="input-2" placeholder="Add todo" type="text"></div>
+      <div class="v-text-field__slot"><input id="input-12" placeholder="Add todo" type="text"></div>
+    </div>
+    <div class="v-text-field__details">
+      <div class="v-messages theme--light">
+        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AddTodo.vue renders correctly without text 1`] = `
+<div class="v-input px-4 theme--light v-text-field v-text-field--placeholder">
+  <div class="v-input__control">
+    <div class="v-input__slot">
+      <div class="v-text-field__slot"><input id="input-7" placeholder="Add todo" type="text"></div>
     </div>
     <div class="v-text-field__details">
       <div class="v-messages theme--light">

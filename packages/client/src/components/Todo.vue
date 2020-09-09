@@ -51,6 +51,11 @@ export default Vue.extend({
           },
         })
         .catch(() => {
+          /**
+           * TODO: I added this by analogy with `data.text` in AddTodo.vue, but
+           * it is not correct: a method should not mutate props. Also, `mutate`
+           * presumably doesn't cause a re-render if it errors.
+           */
           this.todo.isComplete = !this.todo.isComplete;
         });
     },
