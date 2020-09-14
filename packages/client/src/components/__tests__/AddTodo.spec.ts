@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
+import { addTodoMutation, addTodoUpdate } from '../../graphql/addTodo.mutation';
 import AddTodo from '../AddTodo.vue';
 
 Vue.use(Vuetify);
@@ -63,8 +64,17 @@ describe('AddTodo.vue', () => {
         },
       },
     });
+    // Simulate user input
+    wrapper.setData(data);
+
     // See above ...
     (wrapper.vm as any).onEnter();
-    expect(mutate).toBeCalled();
+    expect(mutate).toHaveBeenCalledWith({
+      mutation: addTodoMutation,
+      variables: {
+        text: data.text,
+      },
+      update: addTodoUpdate,
+    });
   });
 });

@@ -15,20 +15,14 @@
 </template>
 <script lang="ts">
 import Vue, { PropType } from 'vue';
+import { Todo } from '../graphql/schema';
 import {
   changeTodoIsArchivedMutation,
-  changeTodoIsCompleteMutation,
-  todosQuery,
-} from '../graphql';
-import { TODOS_VARIABLES } from './TodoList.vue';
-
-// export from somewhere?
-interface Todo {
-  id: number;
-  text: string;
-  isComplete: boolean;
-  isArchived: boolean;
-}
+  changeTodoIsArchivedOptimisticResponse,
+  changeTodoIsArchivedUpdate,
+} from '../graphql/changeTodoIsArchived.mutation';
+import changeTodoIsCompleteMutation from '../graphql/changeTodoIsComplete.mutation';
+import { TODOS_VARIABLES } from '../graphql/todos.query';
 
 export default Vue.extend({
   name: 'Todo',
@@ -60,7 +54,7 @@ export default Vue.extend({
         });
     },
     onArchiveClick() {
-      const { id, text, isComplete, isArchived } = this.todo;
+      const { id, isArchived } = this.todo;
 
       this.$apollo
         .mutate({
@@ -69,48 +63,8 @@ export default Vue.extend({
             id,
             isArchived: !isArchived,
           },
-          update: (store, { data: { changeTodoIsArchived } }) => {
-            const { message, success, todo } = changeTodoIsArchived;
-
-            if (!success) {
-              throw new Error(message);
-            }
-
-            const data = store.readQuery({
-              query: todosQuery,
-              variables: TODOS_VARIABLES,
-            });
-
-            // remove todo from query cache if not included by filter
-            const todoInFilter =
-              TODOS_VARIABLES.filter.isArchived === undefined ||
-              TODOS_VARIABLES.filter.isArchived === todo.isArchived;
-
-            if (!todoInFilter) {
-              store.writeQuery({
-                data: {
-                  todos: data.todos.filter((item: Todo) => item.id !== todo.id),
-                },
-                query: todosQuery,
-                variables: TODOS_VARIABLES,
-              });
-            }
-          },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            changeTodoIsArchived: {
-              message: 'Todo isArchived changed successfully',
-              success: true,
-              todo: {
-                __typename: 'Todo',
-                id,
-                text,
-                isComplete,
-                isArchived: !isArchived,
-              },
-              __typename: 'TodoUpdateResponse',
-            },
-          },
+          update: changeTodoIsArchivedUpdate,
+          optimisticResponse: changeTodoIsArchivedOptimisticResponse(this.todo),
         })
         .catch(() => {
           // restore value

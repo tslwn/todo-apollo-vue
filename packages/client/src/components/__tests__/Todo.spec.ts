@@ -1,6 +1,12 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
+import {
+  changeTodoIsArchivedMutation,
+  changeTodoIsArchivedUpdate,
+  changeTodoIsArchivedOptimisticResponse,
+} from '../../graphql/changeTodoIsArchived.mutation';
+import changeTodoIsCompleteMutation from '../../graphql/changeTodoIsComplete.mutation';
 import Todo from '../Todo.vue';
 
 Vue.use(Vuetify);
@@ -29,10 +35,13 @@ describe('Todo.vue', () => {
    */
 
   const todo = {
+    __typename: 'Todo' as const,
     id: -1,
     text: 'Add unit tests',
     isComplete: false,
     isArchived: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   it('renders correctly with isComplete false, isArchived false', () => {
@@ -52,8 +61,6 @@ describe('Todo.vue', () => {
   /**
    * User interaction tests. TODO: trigger events instead of calling methods
    * directly. I'm not sure whether it would be best to combine the two steps.
-   * It's presumably also possible to assert that `mutate` is called with the
-   * correct argument.
    */
 
   it('onIsCompleteChange method calls Apollo mutation', () => {
@@ -68,8 +75,15 @@ describe('Todo.vue', () => {
         todo,
       },
     });
-    (wrapper.vm as any).onIsCompleteChange();
-    expect(mutate).toBeCalled();
+    const isComplete = !todo.isComplete;
+    (wrapper.vm as any).onIsCompleteChange(isComplete);
+    expect(mutate).toHaveBeenCalledWith({
+      mutation: changeTodoIsCompleteMutation,
+      variables: {
+        id: todo.id,
+        isComplete,
+      },
+    });
   });
 
   it('onArchiveClick method calls Apollo mutation', () => {
@@ -85,6 +99,19 @@ describe('Todo.vue', () => {
       },
     });
     (wrapper.vm as any).onArchiveClick();
-    expect(mutate).toBeCalled();
+    expect(mutate).toHaveBeenCalledWith({
+      mutation: changeTodoIsArchivedMutation,
+      variables: {
+        id: todo.id,
+        isArchived: !todo.isArchived,
+      },
+      update: changeTodoIsArchivedUpdate,
+      optimisticResponse: changeTodoIsArchivedOptimisticResponse(todo),
+    });
+    /**
+     * TODO: verify cache after `update` called. Could perhaps also check it's
+     * called twice, first with the optimistic response and then the presumed
+     * actual response.
+     */
   });
 });

@@ -11,7 +11,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "types": ["webpack-env", "jest", "vuetify"],
     "paths": {
       "@/*": ["src/*"]
@@ -26,9 +26,5 @@
     "tests/**/*.tsx"
   ],
   "exclude": ["node_modules", "src/generated"],
-  "typeRoots": [
-    "./node_modules/@types",
-    "./node_modules/vuetify/types",
-    "./src/generated"
-  ]
+  "typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"]
 }

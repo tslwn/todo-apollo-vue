@@ -12,27 +12,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { todosQuery, TODOS_VARIABLES } from '../graphql/todos.query';
 import Todo from './Todo.vue';
-import todosQuery from '../graphql/todos.query';
-
-export interface TodoInput {
-  filter?: {
-    isComplete?: boolean;
-    isArchived?: boolean;
-  };
-  orderBy?: {
-    createdAt?: 'ASC' | 'DESC';
-  };
-}
-
-export const TODOS_VARIABLES: TodoInput = {
-  filter: {
-    isArchived: false,
-  },
-  orderBy: {
-    createdAt: 'ASC',
-  },
-};
 
 export default Vue.extend({
   name: 'todo-list',

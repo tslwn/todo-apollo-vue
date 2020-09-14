@@ -9,8 +9,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { addTodoMutation, todosQuery } from '../graphql';
-import { TODOS_VARIABLES } from './TodoList.vue';
+import { addTodoMutation, addTodoUpdate } from '../graphql/addTodo.mutation';
 
 export default Vue.extend({
   name: 'add-todo',
@@ -30,32 +29,7 @@ export default Vue.extend({
           variables: {
             text,
           },
-          update: (store, { data: { addTodo } }) => {
-            const { message, success, todo } = addTodo;
-
-            if (!success) {
-              throw new Error(message);
-            }
-
-            const data = store.readQuery({
-              query: todosQuery,
-              variables: TODOS_VARIABLES,
-            });
-
-            // add todo to cache
-            const todos =
-              TODOS_VARIABLES.orderBy.createdAt === 'DESC'
-                ? [todo, ...data.todos]
-                : [...data.todos, todo];
-
-            store.writeQuery({
-              data: {
-                todos,
-              },
-              query: todosQuery,
-              variables: TODOS_VARIABLES,
-            });
-          },
+          update: addTodoUpdate,
         })
         .catch(() => {
           // restore user input
