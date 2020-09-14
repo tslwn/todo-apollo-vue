@@ -1,13 +1,6 @@
 import gql from 'graphql-tag';
 import { MutationUpdaterFn } from 'apollo-boost';
-import {
-  Todo,
-  TodoUpdateResponse,
-  Mutation,
-  ChangeTodoIsArchivedInput,
-  ChangeTodoIsArchivedResponse,
-  TodosResponse,
-} from './schema';
+import { Todo, ChangeTodoIsArchivedResponse, TodosResponse } from './schema';
 import { todosQuery, TODOS_VARIABLES } from './todos.query';
 
 export const changeTodoIsArchivedMutation = gql`
