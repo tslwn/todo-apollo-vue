@@ -23,7 +23,7 @@ export const changeTodoIsArchivedUpdate: MutationUpdaterFn<ChangeTodoIsArchivedR
   mutationResult,
 ) => {
   const { data } = mutationResult;
-  if (data === null || data === undefined) {
+  if (data == null) {
     throw new Error('No mutation result');
   } else if (data.changeTodoIsArchived.success === false) {
     throw new Error(data.changeTodoIsArchived.message);

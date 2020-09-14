@@ -23,7 +23,7 @@ export const addTodoUpdate: MutationUpdaterFn<AddTodoResponse> = (
   mutationResult,
 ) => {
   const { data } = mutationResult;
-  if (data === null || data === undefined) {
+  if (data == null) {
     throw new Error('No mutation result');
   } else if (data.addTodo.success === false) {
     throw new Error(data.addTodo.message);
