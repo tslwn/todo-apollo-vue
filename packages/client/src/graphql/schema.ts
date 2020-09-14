@@ -44,19 +44,24 @@ export type ChangeTodoIsCompleteInput = Pick<Todo, 'id' | 'isComplete'>;
 
 export type ChangeTodoIsArchivedInput = Pick<Todo, 'id' | 'isArchived'>;
 
+interface TodoUpdateResponseGeneric {
+  __typename: 'TodoUpdateResponse';
+  success: boolean;
+  message?: string;
+}
+
+interface TodoUpdateResponseSuccess extends TodoUpdateResponseGeneric {
+  success: true;
+  todo: Pick<Todo, '__typename' | 'id' | 'text' | 'isComplete' | 'isArchived'>;
+}
+
+interface TodoUpdateResponseFailure extends TodoUpdateResponseGeneric {
+  success: false;
+}
+
 export type TodoUpdateResponse =
-  | {
-      __typename: 'TodoUpdateResponse';
-      success: true;
-      message?: string;
-      todo: Partial<Todo>;
-    }
-  | {
-      __typename: 'TodoUpdateResponse';
-      success: false;
-      message?: string;
-      todo?: Partial<Todo>;
-    };
+  | TodoUpdateResponseSuccess
+  | TodoUpdateResponseFailure;
 
 export interface Mutation {
   __typename: 'Mutation';

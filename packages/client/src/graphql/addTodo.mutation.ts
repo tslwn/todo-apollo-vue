@@ -23,34 +23,34 @@ export const addTodoUpdate: MutationUpdaterFn<AddTodoResponse> = (
   mutationResult,
 ) => {
   const { data } = mutationResult;
-  if (!data) {
+  if (data === null || data === undefined) {
     throw new Error('No mutation result');
+  } else if (data.addTodo.success === false) {
+    throw new Error(data.addTodo.message);
+  } else {
+    const todo = data.addTodo.todo;
+
+    // get todos before update
+    const queryResponse = store.readQuery<TodosResponse>({
+      query: todosQuery,
+      variables: TODOS_VARIABLES,
+    });
+    if (queryResponse === null) {
+      throw new Error('No query result');
+    }
+
+    // add todo to cache (end unless sorted by descending `createdAt`)
+    const todos =
+      TODOS_VARIABLES?.orderBy?.createdAt === 'DESC'
+        ? [todo, ...queryResponse.todos]
+        : [...queryResponse.todos, todo];
+
+    store.writeQuery({
+      data: {
+        todos,
+      },
+      query: todosQuery,
+      variables: TODOS_VARIABLES,
+    });
   }
-
-  const { message, success, todo } = data.addTodo;
-  if (!success) {
-    throw new Error(message);
-  }
-
-  const queryResponse = store.readQuery<TodosResponse>({
-    query: todosQuery,
-    variables: TODOS_VARIABLES,
-  });
-  if (queryResponse === null) {
-    throw new Error('No query result');
-  }
-
-  // add todo to cache
-  const todos =
-    TODOS_VARIABLES?.orderBy?.createdAt === 'DESC'
-      ? [todo, ...queryResponse.todos]
-      : [...queryResponse.todos, todo];
-
-  store.writeQuery({
-    data: {
-      todos,
-    },
-    query: todosQuery,
-    variables: TODOS_VARIABLES,
-  });
 };

@@ -46,7 +46,7 @@ const schema = gql`
 
 export enum Sort {
   Asc = 'ASC',
-  Desc = 'DESC'
+  Desc = 'DESC',
 }
 
 export type TodosFilterInput = Partial<Pick<Todo, 'isComplete' | 'isArchived'>>;
@@ -72,10 +72,22 @@ export type ChangeTodoIsCompleteInput = Pick<Todo, 'id' | 'isComplete'>;
 
 export type ChangeTodoIsArchivedInput = Pick<Todo, 'id' | 'isArchived'>;
 
-export interface TodoUpdateResponse {
+interface TodoUpdateResponseGeneric {
   success: boolean;
   message?: string;
-  todo?: Todo;
 }
+
+interface TodoUpdateResponseSuccess extends TodoUpdateResponseGeneric {
+  success: true;
+  todo: Todo;
+}
+
+interface TodoUpdateResponseFailure extends TodoUpdateResponseGeneric {
+  success: false;
+}
+
+export type TodoUpdateResponse =
+  | TodoUpdateResponseSuccess
+  | TodoUpdateResponseFailure;
 
 export default schema;

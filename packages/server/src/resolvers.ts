@@ -7,7 +7,7 @@ import {
   AddTodoInput,
   ChangeTodoTextInput,
   ChangeTodoIsCompleteInput,
-  ChangeTodoIsArchivedInput
+  ChangeTodoIsArchivedInput,
 } from 'schema';
 import TodoAPI from 'datasources/todo.datasource';
 import { Todo } from 'types/todo.types';
@@ -22,14 +22,14 @@ const todoUpdate = async <T>(
   const todoOrError = await func.bind(context)(args);
   if (todoOrError instanceof Error) {
     return {
-      success: false,
-      message: todoOrError.message
+      success: false as const,
+      message: todoOrError.message,
     };
   }
   return {
-    success: true,
+    success: true as const,
     message,
-    todo: todoOrError
+    todo: todoOrError,
   };
 };
 
@@ -38,7 +38,7 @@ const resolvers: IResolvers<any, Context> = {
     todos: (_, { filter, orderBy }: TodosInput, { dataSources }) =>
       dataSources.todoAPI.getAllTodos({ filter, orderBy }),
     todo: (_, { id }: TodoInput, { dataSources }) =>
-      dataSources.todoAPI.getTodoById({ id })
+      dataSources.todoAPI.getTodoById({ id }),
   },
   Mutation: {
     addTodo: async (
@@ -88,8 +88,8 @@ const resolvers: IResolvers<any, Context> = {
         args,
         'Todo isArchived changed successfully'
       );
-    }
-  }
+    },
+  },
 };
 
 export default resolvers;

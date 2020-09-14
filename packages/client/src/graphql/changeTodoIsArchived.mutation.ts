@@ -23,38 +23,38 @@ export const changeTodoIsArchivedUpdate: MutationUpdaterFn<ChangeTodoIsArchivedR
   mutationResult,
 ) => {
   const { data } = mutationResult;
-  if (!data) {
+  if (data === null || data === undefined) {
     throw new Error('No mutation result');
-  }
+  } else if (data.changeTodoIsArchived.success === false) {
+    throw new Error(data.changeTodoIsArchived.message);
+  } else {
+    const todo = data.changeTodoIsArchived.todo;
 
-  const { message, success, todo } = data.changeTodoIsArchived;
-  if (!success) {
-    throw new Error(message);
-  }
-
-  const queryResponse = store.readQuery<TodosResponse>({
-    query: todosQuery,
-    variables: TODOS_VARIABLES,
-  });
-  if (queryResponse === null) {
-    throw new Error('No query result');
-  }
-
-  // remove todo from query cache if not included by filter
-  // TODO: type narrowing should mean that `todo` is defined here ...
-  const todoInFilter =
-    TODOS_VARIABLES?.filter?.isArchived === undefined ||
-    TODOS_VARIABLES.filter.isArchived === todo?.isArchived;
-
-  if (!todoInFilter) {
-    store.writeQuery({
-      data: {
-        // ... and here
-        todos: queryResponse.todos.filter((item: Todo) => item.id !== todo?.id),
-      },
+    // get todos before update
+    const queryResponse = store.readQuery<TodosResponse>({
       query: todosQuery,
       variables: TODOS_VARIABLES,
     });
+    if (queryResponse === null) {
+      throw new Error('No query result');
+    }
+
+    // remove todo from query cache if not included by filter
+    const todoInFilter =
+      TODOS_VARIABLES?.filter?.isArchived === undefined ||
+      TODOS_VARIABLES.filter.isArchived === todo.isArchived;
+
+    if (!todoInFilter) {
+      store.writeQuery({
+        data: {
+          todos: queryResponse.todos.filter(
+            (item: Todo) => item.id !== todo?.id,
+          ),
+        },
+        query: todosQuery,
+        variables: TODOS_VARIABLES,
+      });
+    }
   }
 };
 
