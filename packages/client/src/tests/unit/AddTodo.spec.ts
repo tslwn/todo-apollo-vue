@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
 import { addTodoMutation, addTodoUpdate } from '../../graphql/addTodo.mutation';
-import AddTodo from '../AddTodo.vue';
+import AddTodo from '../../components/AddTodo.vue';
 
 Vue.use(Vuetify);
 

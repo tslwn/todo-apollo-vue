@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue } from '@vue/test-utils';
-import TodoList from '../TodoList.vue';
+import TodoList from '../../components/TodoList.vue';
 
 Vue.use(Vuetify);
 

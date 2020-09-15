@@ -7,7 +7,7 @@ import {
   changeTodoIsArchivedOptimisticResponse,
 } from '../../graphql/changeTodoIsArchived.mutation';
 import changeTodoIsCompleteMutation from '../../graphql/changeTodoIsComplete.mutation';
-import Todo from '../Todo.vue';
+import Todo from '../../components/Todo.vue';
 
 Vue.use(Vuetify);
 
