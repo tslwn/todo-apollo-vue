@@ -41,6 +41,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
+    "graphql-tools": "^6.2.2",
     "prettier": "^2.1.1",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",

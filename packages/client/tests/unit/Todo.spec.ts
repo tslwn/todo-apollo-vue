@@ -1,3 +1,5 @@
+import { graphql } from 'graphql';
+import { addMocksToSchema } from '@graphql-tools/mock';
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
@@ -5,9 +7,10 @@ import {
   changeTodoIsArchivedMutation,
   changeTodoIsArchivedUpdate,
   changeTodoIsArchivedOptimisticResponse,
-} from '../../graphql/changeTodoIsArchived.mutation';
-import changeTodoIsCompleteMutation from '../../graphql/changeTodoIsComplete.mutation';
-import Todo from '../../components/Todo.vue';
+} from '../../src/graphql/changeTodoIsArchived.mutation';
+import changeTodoIsCompleteMutation from '../../src/graphql/changeTodoIsComplete.mutation';
+import Todo from '../../src/components/Todo.vue';
+import schema from '../mockSchema';
 
 Vue.use(Vuetify);
 
@@ -26,6 +29,7 @@ describe('Todo.vue', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
+    addMocksToSchema({ schema, preserveResolvers: true });
   });
 
   /**
@@ -35,13 +39,11 @@ describe('Todo.vue', () => {
    */
 
   const todo = {
-    __typename: 'Todo' as const,
+    __typename: 'Todo' as 'Todo',
     id: -1,
     text: 'Add unit tests',
     isComplete: false,
     isArchived: false,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
   };
 
   it('renders correctly with isComplete false, isArchived false', () => {
@@ -113,5 +115,87 @@ describe('Todo.vue', () => {
      * called twice, first with the optimistic response and then the presumed
      * actual response.
      */
+  });
+
+  /**
+   * Mock schema tests.
+   */
+
+  it('called changeTodoIsComplete mutation with mock schema', async () => {
+    const response = {
+      success: true,
+      message: 'Todo isComplete changed successfully',
+      todo: {
+        id: 0,
+        text: 'Add unit tests',
+        isComplete: true,
+        isArchived: false,
+      },
+    };
+    const mutation = `
+      mutation($id: ID!, $isComplete: Boolean!) {
+        changeTodoIsComplete(id: $id, isComplete: $isComplete) {
+          success
+          message
+          todo {
+            id
+            text
+            isComplete
+            isArchived
+          }
+        }
+      }
+    `;
+    const result = await graphql({
+      schema,
+      source: mutation,
+      variableValues: {
+        id: response.todo.id,
+        isComplete: response.todo.isComplete,
+      },
+    });
+    if (result.data == null) {
+      throw new Error('No mutation result');
+    }
+    expect(result.data.changeTodoIsComplete).toMatchObject(response);
+  });
+
+  it('called changeTodoIsArchived mutation with mock schema', async () => {
+    const response = {
+      success: true,
+      message: 'Todo isArchived changed successfully',
+      todo: {
+        id: 0,
+        text: 'Add unit tests',
+        isComplete: false,
+        isArchived: true,
+      },
+    };
+    const mutation = `
+      mutation($id: ID!, $isArchived: Boolean!) {
+        changeTodoIsArchived(id: $id, isArchived: $isArchived) {
+          success
+          message
+          todo {
+            id
+            text
+            isComplete
+            isArchived
+          }
+        }
+      }
+    `;
+    const result = await graphql({
+      schema,
+      source: mutation,
+      variableValues: {
+        id: response.todo.id,
+        isArchived: response.todo.isArchived,
+      },
+    });
+    if (result.data == null) {
+      throw new Error('No mutation result');
+    }
+    expect(result.data.changeTodoIsArchived).toMatchObject(response);
   });
 });

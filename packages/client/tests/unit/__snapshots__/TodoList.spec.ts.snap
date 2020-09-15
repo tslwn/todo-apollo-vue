@@ -5,3 +5,9 @@ exports[`TodoList.vue renders correctly 1`] = `
   <transition-group-stub tag="v-list" name="slide-x-transition"></transition-group-stub>
 </div>
 `;
+
+exports[`TodoList.vue renders correctly with mock schema 1`] = `
+<div>
+  <transition-group-stub tag="v-list" name="slide-x-transition"></transition-group-stub>
+</div>
+`;

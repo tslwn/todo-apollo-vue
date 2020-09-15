@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server';
-import { Todo, TodoAttributes } from 'types/todo.types';
+import { Todo } from 'types/todo.types';
 
 const schema = gql`
   type Todo {
