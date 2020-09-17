@@ -28,7 +28,7 @@ export const addTodoUpdate: MutationUpdaterFn<AddTodoResponse> = (
   } else if (data.addTodo.success === false) {
     throw new Error(data.addTodo.message);
   } else {
-    const todo = data.addTodo.todo;
+    const { todo } = data.addTodo;
 
     // get todos before update
     const queryResponse = store.readQuery<TodosResponse>({

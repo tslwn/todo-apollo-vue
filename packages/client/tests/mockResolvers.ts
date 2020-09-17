@@ -7,7 +7,7 @@ import {
 } from '../src/graphql/schema';
 
 const todo = {
-  __typename: 'Todo' as 'Todo',
+  __typename: 'Todo' as const,
   id: 0,
   text: 'Add unit tests',
   isComplete: false,

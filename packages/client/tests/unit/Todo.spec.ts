@@ -39,7 +39,7 @@ describe('Todo.vue', () => {
    */
 
   const todo = {
-    __typename: 'Todo' as 'Todo',
+    __typename: 'Todo' as const,
     id: -1,
     text: 'Add unit tests',
     isComplete: false,

@@ -28,7 +28,7 @@ export const changeTodoIsArchivedUpdate: MutationUpdaterFn<ChangeTodoIsArchivedR
   } else if (data.changeTodoIsArchived.success === false) {
     throw new Error(data.changeTodoIsArchived.message);
   } else {
-    const todo = data.changeTodoIsArchived.todo;
+    const { todo } = data.changeTodoIsArchived;
 
     // get todos before update
     const queryResponse = store.readQuery<TodosResponse>({
