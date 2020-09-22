@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { MutationUpdaterFn } from 'apollo-boost';
-import { AddTodoResponse, TodosResponse } from './schema';
+import { AddTodoInput, AddTodoResponse, TodosResponse } from './schema';
 import { todosQuery, TODOS_VARIABLES } from './todos.query';
 
 export const addTodoMutation = gql`
@@ -17,6 +17,25 @@ export const addTodoMutation = gql`
     }
   }
 `;
+
+export const addTodoOptimisticResponse = ({
+  id,
+  text,
+}: AddTodoInput): AddTodoResponse => ({
+  __typename: 'Mutation',
+  addTodo: {
+    __typename: 'TodoUpdateResponse',
+    success: true,
+    message: 'Todo added successfully',
+    todo: {
+      __typename: 'Todo',
+      id,
+      text,
+      isComplete: false,
+      isArchived: false,
+    },
+  },
+});
 
 export const addTodoUpdate: MutationUpdaterFn<AddTodoResponse> = (
   store,

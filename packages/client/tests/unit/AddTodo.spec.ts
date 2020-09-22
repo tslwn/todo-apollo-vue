@@ -5,6 +5,7 @@ import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
 import {
+  addTodoOptimisticResponse,
   addTodoMutation,
   addTodoUpdate,
 } from '../../src/graphql/addTodo.mutation';
@@ -86,6 +87,7 @@ describe('AddTodo.vue', () => {
         id: expect.any(String),
         text: data.text,
       },
+      // TODO: ensure called with optimisticResponse function?
       update: addTodoUpdate,
     });
   });
