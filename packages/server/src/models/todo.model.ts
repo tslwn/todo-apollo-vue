@@ -4,22 +4,23 @@ import { Todo } from '../types/todo.types';
 module.exports = (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   const TodoModel = sequelize.define<Todo>('Todo', {
     id: {
-      type: dataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+      allowNull: false,
+      defaultValue: dataTypes.UUIDV4,
+      primaryKey: true,
+      type: dataTypes.UUID,
     },
     text: {
+      allowNull: false,
       type: dataTypes.STRING,
-      allowNull: false
     },
     isComplete: {
+      allowNull: false,
       type: dataTypes.BOOLEAN,
-      allowNull: false
     },
     isArchived: {
+      allowNull: false,
       type: dataTypes.BOOLEAN,
-      allowNull: false
-    }
+    },
   });
   return TodoModel;
 };

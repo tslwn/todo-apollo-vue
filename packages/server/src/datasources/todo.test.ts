@@ -7,10 +7,10 @@ const todoAPI = new TodoAPI({ sequelize });
 
 // This must be in sync with the seed data
 const initialTodo = {
-  id: 1,
+  id: '85683357-809d-47c6-b0cf-76866bbe7933',
   text: 'Buy milk',
   isComplete: false,
-  isArchived: false
+  isArchived: false,
 };
 
 afterAll(() => {
@@ -29,14 +29,14 @@ describe('getAllTodos', () => {
 
   test('returns two todos with filter isComplete', async () => {
     const todos = (await todoAPI.getAllTodos({
-      filter: { isComplete: true }
+      filter: { isComplete: true },
     })) as Todo[];
     expect(todos.length).toBe(2);
   });
 
   test('returns todos in order', async () => {
     const todos = (await todoAPI.getAllTodos({
-      orderBy: { createdAt: Sort.Desc }
+      orderBy: { createdAt: Sort.Desc },
     })) as Todo[];
     const sortedTodos = todos.sort(
       (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
@@ -53,7 +53,7 @@ describe('getTodoById', () => {
 
   test('returns error when no data found', async () => {
     const error = await todoAPI.getTodoById({
-      id: -1
+      id: 'not-a-uuid',
     });
     expect(error).toBeInstanceOf(Error);
   });
@@ -61,15 +61,11 @@ describe('getTodoById', () => {
 
 describe('addTodo', () => {
   test('returns added todo when successful', async () => {
-    /**
-     * autoIncrement is true for the Todo model id field, so after the todos
-     * seed runs the next value is 5.
-     */
+    // Database will generate UUID
     const addedTodo = {
-      id: 5,
       text: 'Test addTodo',
       isComplete: false,
-      isArchived: false
+      isArchived: false,
     };
     const todo = (await todoAPI.addTodo({ text: addedTodo.text })) as Todo;
 
@@ -85,11 +81,11 @@ describe('changeTodoText', () => {
   test('returns changed todo when successful', async () => {
     const changedTodo = {
       ...initialTodo,
-      text: 'Test changeTodoText'
+      text: 'Test changeTodoText',
     };
     const todo = (await todoAPI.changeTodoText({
       id: changedTodo.id,
-      text: changedTodo.text
+      text: changedTodo.text,
     })) as Todo;
     expect(todo).toMatchObject(changedTodo);
 
@@ -100,8 +96,8 @@ describe('changeTodoText', () => {
 
   test('returns error when no data found', async () => {
     const error = await todoAPI.changeTodoText({
-      id: -1,
-      text: 'Test changeTodoText'
+      id: 'not-a-uuid',
+      text: 'Test changeTodoText',
     });
     expect(error).toBeInstanceOf(Error);
   });
@@ -111,11 +107,11 @@ describe('changeTodoIsComplete', () => {
   test('returns changed todo when successful', async () => {
     const changedTodo = {
       ...initialTodo,
-      isComplete: true
+      isComplete: true,
     };
     const todo = (await todoAPI.changeTodoIsComplete({
       id: changedTodo.id,
-      isComplete: changedTodo.isComplete
+      isComplete: changedTodo.isComplete,
     })) as Todo;
     expect(todo).toMatchObject(changedTodo);
 
@@ -126,8 +122,8 @@ describe('changeTodoIsComplete', () => {
 
   test('returns error when no data found', async () => {
     const error = await todoAPI.changeTodoIsComplete({
-      id: -1,
-      isComplete: true
+      id: 'not-a-uuid',
+      isComplete: true,
     });
     expect(error).toBeInstanceOf(Error);
   });
@@ -137,11 +133,11 @@ describe('changeTodoIsArchived', () => {
   test('returns changed todo when successful', async () => {
     const changedTodo = {
       ...initialTodo,
-      isArchived: true
+      isArchived: true,
     };
     const todo = (await todoAPI.changeTodoIsArchived({
       id: changedTodo.id,
-      isArchived: changedTodo.isArchived
+      isArchived: changedTodo.isArchived,
     })) as Todo;
     expect(todo).toMatchObject(changedTodo);
 
@@ -152,8 +148,8 @@ describe('changeTodoIsArchived', () => {
 
   test('returns error when no data found', async () => {
     const error = await todoAPI.changeTodoIsArchived({
-      id: -1,
-      isArchived: true
+      id: 'not-a-uuid',
+      isArchived: true,
     });
     expect(error).toBeInstanceOf(Error);
   });

@@ -45,6 +45,7 @@
     "db:seed:all:test": "cross-env NODE_ENV=test npx sequelize-cli db:seed:all",
     "db:seed:undo": "npx sequelize-cli db:seed:undo",
     "db:seed:undo:all": "npx sequelize-cli db:seed:undo:all",
+    "migration:generate": "npx sequelize-cli migration:generate",
     "model:generate": "npx sequelize-cli model:generate",
     "seed:generate": "npx sequelize-cli seed:generate",
     "test": "yarn db:create:test & yarn db:migrate:test & yarn db:seed:all:test & jest --config jest.config.js & yarn db:drop:test"

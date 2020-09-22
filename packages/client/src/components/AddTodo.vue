@@ -22,7 +22,6 @@ export default Vue.extend({
 
       this.text = '';
 
-      // TODO: optimistic response breaks transition
       this.$apollo
         .mutate({
           mutation: addTodoMutation,
@@ -30,6 +29,22 @@ export default Vue.extend({
             text,
           },
           update: addTodoUpdate,
+          optimisticResponse: {
+            __typename: 'Mutation',
+            addTodo: {
+              __typename: 'TodoUpdateResponse',
+              success: true,
+              message: 'Todo added successfully',
+              todo: {
+                __typename: 'Todo',
+                // Mock ID
+                id: -1,
+                text,
+                isComplete: false,
+                isArchived: false,
+              },
+            },
+          },
         })
         .catch(() => {
           // restore user input
