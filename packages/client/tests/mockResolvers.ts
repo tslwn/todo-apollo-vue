@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import {
   AddTodoInput,
   ChangeTodoTextInput,
@@ -8,7 +9,7 @@ import {
 
 const todo = {
   __typename: 'Todo' as const,
-  id: 0,
+  id: uuidv4(),
   text: 'Add unit tests',
   isComplete: false,
   isArchived: false,
@@ -18,13 +19,13 @@ export default {
   Query: {
     todos: () => [
       {
-        id: -2,
+        id: uuidv4(),
         text: 'Add unit tests',
         isComplete: false,
         isArchived: false,
       },
       {
-        id: -1,
+        id: uuidv4(),
         text: 'Add integration tests',
         isComplete: true,
         isArchived: true,
@@ -39,6 +40,7 @@ export default {
       message: 'Todo added successfully',
       todo: {
         ...todo,
+        id: args.id,
         text: args.text,
       },
     }),
@@ -51,6 +53,7 @@ export default {
       message: 'Todo text changed successfully',
       todo: {
         ...todo,
+        id: args.id,
         text: args.text,
       },
     }),
@@ -63,6 +66,7 @@ export default {
       message: 'Todo isComplete changed successfully',
       todo: {
         ...todo,
+        id: args.id,
         isComplete: args.isComplete,
       },
     }),
@@ -75,6 +79,7 @@ export default {
       message: 'Todo isArchived changed successfully',
       todo: {
         ...todo,
+        id: args.id,
         isArchived: args.isArchived,
       },
     }),

@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 import { addTodoMutation, addTodoUpdate } from '../graphql/addTodo.mutation';
 
@@ -26,25 +27,10 @@ export default Vue.extend({
         .mutate({
           mutation: addTodoMutation,
           variables: {
+            id: uuidv4(),
             text,
           },
           update: addTodoUpdate,
-          optimisticResponse: {
-            __typename: 'Mutation',
-            addTodo: {
-              __typename: 'TodoUpdateResponse',
-              success: true,
-              message: 'Todo added successfully',
-              todo: {
-                __typename: 'Todo',
-                // Mock ID
-                id: -1,
-                text,
-                isComplete: false,
-                isArchived: false,
-              },
-            },
-          },
         })
         .catch(() => {
           // restore user input

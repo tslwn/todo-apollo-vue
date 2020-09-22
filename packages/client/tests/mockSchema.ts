@@ -37,7 +37,7 @@ const schema = `
   }
 
   type Mutation {
-    addTodo(text: String!): TodoUpdateResponse!
+    addTodo(id: ID!, text: String!): TodoUpdateResponse!
     changeTodoText(id: ID!, text: String!): TodoUpdateResponse!
     changeTodoIsComplete(id: ID!, isComplete: Boolean!): TodoUpdateResponse!
     changeTodoIsArchived(id: ID!, isArchived: Boolean!): TodoUpdateResponse!

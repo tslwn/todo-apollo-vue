@@ -1,5 +1,6 @@
 import { graphql } from 'graphql';
 import { addMocksToSchema } from '@graphql-tools/mock';
+import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
@@ -40,7 +41,7 @@ describe('Todo.vue', () => {
 
   const todo = {
     __typename: 'Todo' as const,
-    id: -1,
+    id: uuidv4(),
     text: 'Add unit tests',
     isComplete: false,
     isArchived: false,
@@ -126,7 +127,7 @@ describe('Todo.vue', () => {
       success: true,
       message: 'Todo isComplete changed successfully',
       todo: {
-        id: 0,
+        id: uuidv4(),
         text: 'Add unit tests',
         isComplete: true,
         isArchived: false,
@@ -165,7 +166,7 @@ describe('Todo.vue', () => {
       success: true,
       message: 'Todo isArchived changed successfully',
       todo: {
-        id: 0,
+        id: uuidv4(),
         text: 'Add unit tests',
         isComplete: false,
         isArchived: true,

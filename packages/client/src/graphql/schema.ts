@@ -1,6 +1,6 @@
 export interface Todo {
   __typename: 'Todo';
-  id: number;
+  id: string;
   text: string;
   isComplete: boolean;
   isArchived: boolean;
@@ -36,7 +36,7 @@ export interface TodosResponse extends Query {
   todos: Todo[];
 }
 
-export type AddTodoInput = Pick<Todo, 'text'>;
+export type AddTodoInput = Pick<Todo, 'id' | 'text'>;
 
 export type ChangeTodoTextInput = Pick<Todo, 'id' | 'text'>;
 

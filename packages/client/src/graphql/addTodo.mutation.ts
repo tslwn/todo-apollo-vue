@@ -4,8 +4,8 @@ import { AddTodoResponse, TodosResponse } from './schema';
 import { todosQuery, TODOS_VARIABLES } from './todos.query';
 
 export const addTodoMutation = gql`
-  mutation($text: String!) {
-    addTodo(text: $text) {
+  mutation($id: ID!, $text: String!) {
+    addTodo(id: $id, text: $text) {
       success
       message
       todo {

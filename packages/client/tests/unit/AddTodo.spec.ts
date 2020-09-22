@@ -1,5 +1,6 @@
 import { graphql } from 'graphql';
 import { addMocksToSchema } from '@graphql-tools/mock';
+import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { mount, createLocalVue, ThisTypedMountOptions } from '@vue/test-utils';
@@ -80,7 +81,9 @@ describe('AddTodo.vue', () => {
     (wrapper.vm as any).onEnter();
     expect(mutate).toHaveBeenCalledWith({
       mutation: addTodoMutation,
+      // TODO: ensure `id` is a UUID
       variables: {
+        id: expect.any(String),
         text: data.text,
       },
       update: addTodoUpdate,
@@ -93,7 +96,7 @@ describe('AddTodo.vue', () => {
 
   it('called addTodo mutation with mock schema', async () => {
     const todo = {
-      id: 0,
+      id: uuidv4(),
       text: 'Add unit tests',
       isComplete: false,
       isArchived: false,
@@ -104,8 +107,8 @@ describe('AddTodo.vue', () => {
       todo,
     };
     const mutation = `
-      mutation($text: String!) {
-        addTodo(text: $text) {
+      mutation($id: ID!, $text: String!) {
+        addTodo(id: $id, text: $text) {
           success
           message
           todo {
@@ -121,6 +124,7 @@ describe('AddTodo.vue', () => {
       schema,
       source: mutation,
       variableValues: {
+        id: todo.id,
         text: todo.text,
       },
     });
