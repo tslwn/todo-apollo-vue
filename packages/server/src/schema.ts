@@ -37,7 +37,7 @@ const schema = gql`
   }
 
   type Mutation {
-    addTodo(text: String!): TodoUpdateResponse!
+    addTodo(id: ID!, text: String!): TodoUpdateResponse!
     changeTodoText(id: ID!, text: String!): TodoUpdateResponse!
     changeTodoIsComplete(id: ID!, isComplete: Boolean!): TodoUpdateResponse!
     changeTodoIsArchived(id: ID!, isArchived: Boolean!): TodoUpdateResponse!
@@ -64,7 +64,7 @@ export interface TodosInput {
 
 export type TodoInput = Pick<Todo, 'id'>;
 
-export type AddTodoInput = Pick<Todo, 'text'>;
+export type AddTodoInput = Pick<Todo, 'id' | 'text'>;
 
 export type ChangeTodoTextInput = Pick<Todo, 'id' | 'text'>;
 

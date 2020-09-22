@@ -8,7 +8,7 @@ import {
   ChangeTodoIsCompleteInput,
   ChangeTodoIsArchivedInput,
   TodosInput,
-  TodosOrderByInputKey
+  TodosOrderByInputKey,
 } from 'schema';
 
 class TodoAPI extends DataSource {
@@ -28,9 +28,9 @@ class TodoAPI extends DataSource {
     try {
       // TODO: overload ObjectConstructor instead?
       const order = orderBy
-        ? ((Object.keys(orderBy) as Array<TodosOrderByInputKey>).map(key => [
+        ? ((Object.keys(orderBy) as Array<TodosOrderByInputKey>).map((key) => [
             key,
-            orderBy[key]
+            orderBy[key],
           ]) as OrderItem[])
         : undefined;
 
@@ -53,12 +53,13 @@ class TodoAPI extends DataSource {
     }
   }
 
-  async addTodo({ text }: AddTodoInput): Promise<Todo | Error> {
+  async addTodo({ id, text }: AddTodoInput): Promise<Todo | Error> {
     try {
       const todo = await this.model.create({
+        id,
         text,
         isComplete: false,
-        isArchived: false
+        isArchived: false,
       });
       return todo;
     } catch (err) {
@@ -80,7 +81,7 @@ class TodoAPI extends DataSource {
 
   async changeTodoText({
     id,
-    text
+    text,
   }: ChangeTodoTextInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(
@@ -95,7 +96,7 @@ class TodoAPI extends DataSource {
 
   async changeTodoIsComplete({
     id,
-    isComplete
+    isComplete,
   }: ChangeTodoIsCompleteInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(
@@ -110,7 +111,7 @@ class TodoAPI extends DataSource {
 
   async changeTodoIsArchived({
     id,
-    isArchived
+    isArchived,
   }: ChangeTodoIsArchivedInput): Promise<Todo | Error> {
     try {
       const [countAffected, rowsAffected] = await this.model.update(

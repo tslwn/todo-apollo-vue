@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import sequelize from '../models';
 import { Sort } from '../schema';
 import { Todo } from 'types/todo.types';
@@ -63,11 +64,15 @@ describe('addTodo', () => {
   test('returns added todo when successful', async () => {
     // Database will generate UUID
     const addedTodo = {
+      id: uuidv4(),
       text: 'Test addTodo',
       isComplete: false,
       isArchived: false,
     };
-    const todo = (await todoAPI.addTodo({ text: addedTodo.text })) as Todo;
+    const todo = (await todoAPI.addTodo({
+      id: addedTodo.id,
+      text: addedTodo.text,
+    })) as Todo;
 
     // Todo instance has other fields
     expect(todo).toMatchObject(addedTodo);
