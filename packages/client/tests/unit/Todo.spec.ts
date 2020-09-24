@@ -62,8 +62,7 @@ describe('Todo.vue', () => {
   });
 
   /**
-   * User interaction tests. TODO: trigger events instead of calling methods
-   * directly. I'm not sure whether it would be best to combine the two steps.
+   * User interaction tests.
    */
 
   it('onIsCompleteChange method calls Apollo mutation', () => {
@@ -78,13 +77,15 @@ describe('Todo.vue', () => {
         todo,
       },
     });
-    const isComplete = !todo.isComplete;
-    (wrapper.vm as any).onIsCompleteChange(isComplete);
+    const { id, isComplete } = todo;
+
+    wrapper.get('input[type="checkbox"]').trigger('change');
+
     expect(mutate).toHaveBeenCalledWith({
       mutation: changeTodoIsCompleteMutation,
       variables: {
-        id: todo.id,
-        isComplete,
+        id,
+        isComplete: !isComplete,
       },
     });
   });
@@ -101,7 +102,9 @@ describe('Todo.vue', () => {
         todo,
       },
     });
-    (wrapper.vm as any).onArchiveClick();
+
+    wrapper.get('button').trigger('click');
+
     expect(mutate).toHaveBeenCalledWith({
       mutation: changeTodoIsArchivedMutation,
       variables: {

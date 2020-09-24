@@ -68,7 +68,7 @@ describe('AddTodo.vue', () => {
    * User interaction tests.
    */
 
-  it('onEnter method calls Apollo mutation', () => {
+  it('keyup.enter event calls Apollo mutation', () => {
     const data = {
       text: 'Add unit tests',
     };
@@ -80,14 +80,12 @@ describe('AddTodo.vue', () => {
         },
       },
     });
-    // Get ID from component to compare against mutation
     const { id } = wrapper.vm.$data;
 
     // Simulate user input
     wrapper.setData(data);
+    wrapper.get('input').trigger('keyup.enter');
 
-    // See above ...
-    (wrapper.vm as any).onEnter();
     expect(mutate).toHaveBeenCalledWith({
       mutation: addTodoMutation,
       variables: {
