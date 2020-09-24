@@ -19,16 +19,17 @@ import {
 export default Vue.extend({
   name: 'add-todo',
   data: () => ({
+    // get ID when component initialised
+    id: uuidv4(),
     text: '',
   }),
   methods: {
     onEnter() {
-      const { text } = this;
+      const { id, text } = this;
 
-      // clear user input
+      // get new ID and clear user input
+      this.id = uuidv4();
       this.text = '';
-
-      const id = uuidv4();
 
       this.$apollo
         .mutate({

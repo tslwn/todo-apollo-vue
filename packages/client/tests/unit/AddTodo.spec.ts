@@ -16,6 +16,10 @@ Vue.use(Vuetify);
 
 const localVue = createLocalVue();
 
+const uuidv4RegExp = new RegExp(
+  /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
+);
+
 describe('AddTodo.vue', () => {
   let vuetify: typeof Vuetify;
 
@@ -36,12 +40,13 @@ describe('AddTodo.vue', () => {
    * Snapshot tests.
    */
 
-  it('text is empty string by default', () => {
+  it('id is string and text is empty string by default', () => {
     const wrapper = createComponent();
     /**
      * As far as I'm aware, we can't infer wrapper.vm's type.
      * https://github.com/vuejs/vue-test-utils/issues/255#issuecomment-423743910
      */
+    expect(wrapper.vm.$data.id).toMatch(uuidv4RegExp);
     expect(wrapper.vm.$data.text).toBe('');
   });
 
@@ -75,6 +80,9 @@ describe('AddTodo.vue', () => {
         },
       },
     });
+    // Get ID from component to compare against mutation
+    const { id } = wrapper.vm.$data;
+
     // Simulate user input
     wrapper.setData(data);
 
@@ -82,12 +90,14 @@ describe('AddTodo.vue', () => {
     (wrapper.vm as any).onEnter();
     expect(mutate).toHaveBeenCalledWith({
       mutation: addTodoMutation,
-      // TODO: ensure `id` is a UUID
       variables: {
-        id: expect.any(String),
+        id,
         text: data.text,
       },
-      // TODO: ensure called with optimisticResponse function?
+      optimisticResponse: addTodoOptimisticResponse({
+        id,
+        text: data.text,
+      }),
       update: addTodoUpdate,
     });
   });
